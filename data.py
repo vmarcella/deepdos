@@ -12,9 +12,12 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 
-def load_dataframe():
+def load_dataframe() -> pd.DataFrame:
     """
         Load up our dataframes that contain 100k of each ddos and benign packets
+
+        Returns:
+            A dataframe that contains 100k samples of both
     """
 
     # Load the ddos dataframe
@@ -35,6 +38,13 @@ def load_dataframe():
 
 
 def preprocess_df(df: pd.DataFrame) -> None:
+    """
+        Preprocess the dataframe for erraneous/irrelevant columns (In place)
+
+        Args:
+            df: The ddos dataframe to be processed
+
+    """
     df.drop(
         ["Flow ID", "Timestamp", "Src IP", "Dst IP", "Flow Byts/s", "Flow Pkts/s"],
         inplace=True,
@@ -54,16 +64,21 @@ def preprocess_df(df: pd.DataFrame) -> None:
     df = df[~df.isin([np.nan, np.inf, -np.inf]).any(1)]
 
 
-def get_train_test(df: pd.DataFrame) -> tuple:
+def get_train_test(
+    ddos_df: pd.DataFrame
+) -> tuple(np.array, np.array, np.array, np.array):
     """
         Obtain the training and testing data.
+
+        Returns:
+
     """
-    X_data = []
-    Y_data = []
+    x_data = []
+    y_data = []
 
     for row in df.values:
-        X_data.append(row[:-1])
-        Y_data.append(row[-1])
+        x_data.append(row[:-1])
+        y_data.append(row[-1])
 
     X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, random_state=1)
     return np.array(X_train), np.array(X_test), np.array(Y_train), np.array(Y_test)
