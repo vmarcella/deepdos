@@ -2,9 +2,13 @@ import ipaddress
 
 import numpy as np
 import pandas as pd
+from keras.layers import LSTM
 from keras.layers.core import Dense
 from keras.models import Sequential
 from keras.utils import np_utils
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 
@@ -31,13 +35,23 @@ def load_dataframe():
 
 
 def preprocess_df(df: pd.DataFrame) -> None:
-    df.drop(["Flow ID", "Timestamp"], inplace=True, axis=1)
+    df.drop(
+        ["Flow ID", "Timestamp", "Src IP", "Dst IP", "Flow Byts/s", "Flow Pkts/s"],
+        inplace=True,
+        axis=1,
+    )
 
     # Apply a bunch of pre-processing to the columns
     df["Label"] = df["Label"].apply(lambda x: 1 if x == "ddos" else 0)
-    df["Src IP"] = df["Src IP"].apply(lambda x: int(ipaddress.IPv4Address(x)))
-    df["Dst IP"] = df["Dst IP"].apply(lambda x: int(ipaddress.IPv4Address(x)))
-    df["Protocol"] = df.Protocol.astype("category")
+    # df["Src IP"] = df["Src IP"].apply(lambda x: int(ipaddress.IPv4Address(x)))
+    # df["Dst IP"] = df["Dst IP"].apply(lambda x: int(ipaddress.IPv4Address(x)))
+    # df["Protocol"] = df.Protocol.astype("category")
+
+    for row in df.columns:
+        df[row] = np.nan_to_num(df[row])
+        print(np.any(np.isnan(df[row])))
+
+    df = df[~df.isin([np.nan, np.inf, -np.inf]).any(1)]
 
 
 def get_train_test(df: pd.DataFrame) -> tuple:
@@ -55,15 +69,41 @@ def get_train_test(df: pd.DataFrame) -> tuple:
     return np.array(X_train), np.array(X_test), np.array(Y_train), np.array(Y_test)
 
 
+def compute_logistic_model(X_train, X_test, Y_train, Y_test):
+    """
+        Create our logistic regression model
+    """
+    lr = LogisticRegression()
+    lr.fit(X_train, Y_train)
+    print(f"Sklearn accuracy: {accuracy_score(lr.predict(X_test), Y_test)}")
+
+
+def compute_neural_network(X_train, X_test, Y_train, Y_test):
+    """
+        Create our NN model
+    """
+    model = Sequential()
+    model.add(Dense(12, input_dim=77, activation="sigmoid"))
+    model.add(Dense(6, activation="sigmoid"))
+    model.add(Dense(2, activation="sigmoid"))
+    model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+    model.fit(
+        X_train, np_utils.to_categorical(Y_train), epochs=200, batch_size=50, verbose=1
+    )
+
+
 if __name__ == "__main__":
     df: pd.DataFrame = load_dataframe()
     preprocess_df(df)
-    X_train, Y_test, Y_train, Y_test = get_train_test(df)
+    X_train, X_test, Y_train, Y_test = get_train_test(df)
 
-    # Create the linear regression model
-    model = Sequential()
-    model.add(Dense(2, input_dim=81, activation="softmax"))
-    model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
-    model.fit(
-        X_train, np_utils.to_categorical(Y_train), epochs=200, batch_size=1, verbose=1
-    )
+    compute_logistic_model(X_train, X_test, Y_train, Y_test)
+    compute_neural_network(X_train, X_test, Y_train, Y_test)
+    ## Create the linear regression model
+    # model = Sequential()
+    # model.add(Dense(12, input_dim=81, activation="softmax"))
+    # model.add(Dense(2, activation="softmax"))
+    # model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
+    # model.fit(
+    #    X_train, np_utils.to_categorical(Y_train), epochs=200, batch_size=10, verbose=1
+    # )
