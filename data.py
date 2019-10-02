@@ -80,7 +80,7 @@ def get_train_test(
         x_data.append(row[:-1])
         y_data.append(row[-1])
 
-    X_train, X_test, Y_train, Y_test = train_test_split(X_data, Y_data, random_state=1)
+    X_train, X_test, Y_train, Y_test = train_test_split(x_data, y_data, random_state=1)
     return np.array(X_train), np.array(X_test), np.array(Y_train), np.array(Y_test)
 
 
@@ -88,6 +88,7 @@ def compute_logistic_model(X_train, X_test, Y_train, Y_test):
     """
         Create our logistic regression model
     """
+    # Obtain a logistic regression
     lr = LogisticRegression()
     lr.fit(X_train, Y_train)
     print(f"Sklearn accuracy: {accuracy_score(lr.predict(X_test), Y_test)}")
@@ -97,6 +98,7 @@ def compute_neural_network(X_train, X_test, Y_train, Y_test):
     """
         Create our NN model
     """
+    # Create a sequential model
     model = Sequential()
     model.add(Dense(12, input_dim=77, activation="sigmoid"))
     model.add(Dense(6, activation="sigmoid"))
@@ -113,12 +115,3 @@ if __name__ == "__main__":
     X_train, X_test, Y_train, Y_test = get_train_test(df)
 
     compute_logistic_model(X_train, X_test, Y_train, Y_test)
-    compute_neural_network(X_train, X_test, Y_train, Y_test)
-    ## Create the linear regression model
-    # model = Sequential()
-    # model.add(Dense(12, input_dim=81, activation="softmax"))
-    # model.add(Dense(2, activation="softmax"))
-    # model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
-    # model.fit(
-    #    X_train, np_utils.to_categorical(Y_train), epochs=200, batch_size=10, verbose=1
-    # )
