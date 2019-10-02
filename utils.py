@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 
@@ -26,8 +27,28 @@ def capture_pcap(interface: str = "eth0"):
         raise subprocess.CalledProcessError(exit_status, pcap_cmd)
 
 
+def execute_cicflowmeter():
+    cic_cmd = ["sh", "bin/CICFlowMeter-4.0/bin/cfm", "pcap_info", "flow_output"]
+    process = subprocess.Popen(cic_cmd)
+
+
 def main_loop():
+    counter = 0
+    pcap_list = []
+    pcap_file = open("pcap_info/out.pcap", "w+", encoding="ISO-8859-1")
     for pcap in capture_pcap("enp3s0"):
-        print("-----------START-----------")
-        print(pcap)
-        print("-----------END-----------")
+        pcap_list.append(pcap)
+        counter += 1
+
+        if counter == 1000:
+            pcap_file.writelines(pcap_list)
+            pcap_file.close()
+
+            execute_cicflowmeter()
+            print("wrote output")
+
+            counter = 0
+            exit()
+
+
+main_loop()
