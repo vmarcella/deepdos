@@ -1,0 +1,17 @@
+2019-10-02 14:47:15 INFO  cic.cs.unb.ca.ifm.Cmd    You select: ../../../pcap_info
+2019-10-02 14:47:15 INFO  cic.cs.unb.ca.ifm.Cmd    Out folder: ../../../flow_output/
+2019-10-02 14:47:15 ERROR cic.cs.unb.ca.jnetpcap.PacketReader    Error while opening file for capture: unknown file format
+2019-10-02 14:55:37 INFO  cic.cs.unb.ca.ifm.Cmd    You select: ../../../pcap_info
+2019-10-02 14:55:37 INFO  cic.cs.unb.ca.ifm.Cmd    Out folder: ../../../flow_output/
+2019-10-02 14:55:37 ERROR cic.cs.unb.ca.jnetpcap.PacketReader    Error while opening file for capture: truncated dump file; tried to read 4 file header bytes, only got 0
+2019-10-02 14:56:24 INFO  cic.cs.unb.ca.ifm.Cmd    You select: ../../../pcap_info
+2019-10-02 14:56:24 INFO  cic.cs.unb.ca.ifm.Cmd    Out folder: ../../../flow_output/
+2019-10-02 14:56:25 DEBUG cic.cs.unb.ca.jnetpcap.PacketReader    null
+********************************************************************************
+0000:*01 80 c2 00* 00 00 70 8b  cd d0 b2 20  00 26 42 42    ......p.... .&BB
+0010: 03 00 00 00  00 00 80 00  70 8b cd d0  b2 20 00 00    ........p.... ..
+0020: 00 00 80 00  70 8b cd d0  b2 20 80 01  00 00 14 00    ....p.... ......
+0030: 02 00 00 00  61 73 61 01  08 8c 12 98*                ....asa.....    
+
+
+2019-10-02 14:56:25 DEBUG cic.cs.unb.ca.jnetpcap.PacketReader    Read All packets on ../../../pcap_info/out.pcap
