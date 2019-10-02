@@ -27,8 +27,7 @@ def capture_pcap(interface: str = "eth0"):
 
 
 def main_loop():
-    pass
-
-
-for pcap in capture_pcap("enp3s0"):
-    print(pcap)
+    for pcap in capture_pcap("enp3s0"):
+        print("-----------START-----------")
+        print(pcap)
+        print("-----------END-----------")
