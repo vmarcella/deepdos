@@ -1,3 +1,5 @@
+# Install pcapdev
+sudo apt install libpcap-dev
 # Create PCAP
 sudo groupadd pcap
 # add your user to the PCAP group
