@@ -1,7 +1,8 @@
 # Ignore dataset folder
 ddos_balanced
 
-
+# Ignore logs
+predictions.txt
 # Created by https://www.gitignore.io/api/linux,macos,python,tensorflow
 # Edit at https://www.gitignore.io/?templates=linux,macos,python,tensorflow
 
