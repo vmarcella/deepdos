@@ -1,8 +1,0 @@
-2019-10-02 14:47:15 - You select: ../../../pcap_info
-2019-10-02 14:47:15 - Out folder: ../../../flow_output/
-2019-10-02 14:47:15 - Error while opening file for capture: unknown file format
-2019-10-02 14:55:37 - You select: ../../../pcap_info
-2019-10-02 14:55:37 - Out folder: ../../../flow_output/
-2019-10-02 14:55:37 - Error while opening file for capture: truncated dump file; tried to read 4 file header bytes, only got 0
-2019-10-02 14:56:24 - You select: ../../../pcap_info
-2019-10-02 14:56:24 - Out folder: ../../../flow_output/
