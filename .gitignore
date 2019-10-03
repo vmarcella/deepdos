@@ -1,6 +1,13 @@
 # Ignore dataset folder
 ddos_balanced
 
+# Flow and pcap info
+flow_output
+pcap_info
+
+# logs for CICflowmeter
+bin/CICFlowMeter-4.0/bin/logs
+
 # Ignore logs
 predictions.txt
 # Created by https://www.gitignore.io/api/linux,macos,python,tensorflow
