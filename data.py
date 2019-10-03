@@ -12,7 +12,9 @@ from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 
-def load_dataframe() -> pd.DataFrame:
+def load_dataframe(
+    csv_location: str = "./ddos_balanced/final_dataset.csv"
+) -> pd.DataFrame:
     """
         Load up our dataframes that contain 100k of each ddos and benign packets
 
@@ -20,17 +22,17 @@ def load_dataframe() -> pd.DataFrame:
             A dataframe that contains 100k samples of both
     """
 
+    if csv_location != "./ddos_balanced/final_dataset.csv":
+        input_df = pd.read_csv(csv_location)
+        return input_df
+
     # Load the ddos dataframe
-    ddos_df = pd.read_csv(
-        "./ddos_balanced/final_dataset.csv", nrows=100000, index_col=0
-    )
+    ddos_df = pd.read_csv(csv_location, nrows=100000, index_col=0)
 
     features = ddos_df.columns
 
     # Load the benign dataframe
-    benign_df = pd.read_csv(
-        "./ddos_balanced/final_dataset.csv", nrows=100000, index_col=0, skiprows=6500000
-    )
+    benign_df = pd.read_csv(csv_location, nrows=100000, index_col=0, skiprows=6500000)
     benign_df.columns = features
 
     df = pd.concat([ddos_df, benign_df])
@@ -59,14 +61,11 @@ def preprocess_df(df: pd.DataFrame) -> None:
 
     for row in df.columns:
         df[row] = np.nan_to_num(df[row])
-        print(np.any(np.isnan(df[row])))
 
     df = df[~df.isin([np.nan, np.inf, -np.inf]).any(1)]
 
 
-def get_train_test(
-    ddos_df: pd.DataFrame
-) -> tuple(np.array, np.array, np.array, np.array):
+def get_train_test(df: pd.DataFrame) -> tuple:
     """
         Obtain the training and testing data.
 
@@ -84,7 +83,7 @@ def get_train_test(
     return np.array(X_train), np.array(X_test), np.array(Y_train), np.array(Y_test)
 
 
-def compute_logistic_model(X_train, X_test, Y_train, Y_test):
+def compute_logistic_model(X_train, X_test, Y_train, Y_test) -> LogisticRegression:
     """
         Create our logistic regression model
     """
@@ -92,6 +91,7 @@ def compute_logistic_model(X_train, X_test, Y_train, Y_test):
     lr = LogisticRegression()
     lr.fit(X_train, Y_train)
     print(f"Sklearn accuracy: {accuracy_score(lr.predict(X_test), Y_test)}")
+    return lr
 
 
 def compute_neural_network(X_train, X_test, Y_train, Y_test):
@@ -109,9 +109,15 @@ def compute_neural_network(X_train, X_test, Y_train, Y_test):
     )
 
 
-if __name__ == "__main__":
+def create_lr() -> LogisticRegression:
     df: pd.DataFrame = load_dataframe()
     preprocess_df(df)
     X_train, X_test, Y_train, Y_test = get_train_test(df)
 
-    compute_logistic_model(X_train, X_test, Y_train, Y_test)
+    return compute_logistic_model(X_train, X_test, Y_train, Y_test)
+
+
+if __name__ == "__main__":
+    df: pd.DataFrame = load_dataframe()
+    preprocess_df(df)
+    X_train, X_test, Y_train, Y_test = get_train_test(df)
