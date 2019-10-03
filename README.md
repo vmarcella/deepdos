@@ -1,27 +1,45 @@
-# Project title
+# deepdos
 
 ## Description
-This project is currently under construction.
+Welcome to deepdos, the python program written to monitor and potentially secure your network
+from ddos attacks! While not currently utilizing deep learning to classify packets, deepdos currently
+utilizes logistic regression in order to classify packets and has so far been trained on 200,000 packets from
+all sorts of DDOS attacks and normal traffic setup. This project couldn't have been
+done without the help of the University of Brunswick providing both the original flow dataset 
+and tool to create flow csvs from .pcap files. Their site and all resources have been linked at the bottom.
+
 
 ## Goals
 ### Short term goals
-- [ ] Goal 1
-- [ ] Goal 2
-- [ ] Goal 3
+- [ ] Add LR test metrics on startup
+- [ ] Update LR to use better data for better performance
+- [ ] Add command line interface
 
 ### Long term goals
-- [ ] Goal 1
-- [ ] Goal 2
-- [ ] Goal 3
+- [ ] Convert Logistic regression model to a neural network
+- [ ] Support both macos and Linux (potentially Windows as well if pcap is easy)
+- [ ] Add ddos mitigation/firewall rule support
 
 ## How to run/setup
-Instructions on the setup process needed for running locally.
+deepdos is currently only available on linux, but can simply be run by these two commands:
+```bash
+# install dependencies and allow pcap information to be captured without root.
+sudo ./setup.sh
+# Execute the script
+python3 utils.py
+```
+
+This will immediately start creating necessary folders, capturing packets, and then identifying
+the traffic that is being exchanged in and out of your current computer.
+
+This also assumes that you have java installed for the program to execute the CICFlowMeter jar
+file.
 
 ## How to deploy
-How to deploy your own instance live.
+You can deploy this on your own machine, but production use will come in the future.
 
 ## Live deployments
-Where you can find this project in production
+This will be on pypi soon :)
 
 ## How to contribute
 Fork the current repository and then make the changes that you'd like to said fork. Upon adding features, fixing bugs,
@@ -30,4 +48,5 @@ and I will evaluate them before taking further action. This process may take any
 my schedule, and any other variable factors.
 
 ## Resources
-External resources used and needed for this project to be completed. Always cite your peer developers!
+[UNB datasets](https://www.unb.ca/cic/datasets/)
+[CICnetflowmeter](http://www.netflowmeter.ca/netflowmeter.html)
