@@ -76,7 +76,6 @@ def main_loop():
         and executing model commands
     """
     # Init program vars
-    pcap_file = open(f"pcap_info/out.pcap", "w", encoding="ISO-8859-1")
     predictions = open("predictions.txt", "w+")
     running = True
     model = True
@@ -95,6 +94,7 @@ def main_loop():
 
     while running:
         # Iterate through every pcap captured from my specific ethernet port
+        pcap_file = open(f"pcap_info/out.pcap", "w", encoding="ISO-8859-1")
         pcap_list = capture_pcap("wlo1")
 
         # The counter controls the amount of writes that occur.
@@ -108,19 +108,23 @@ def main_loop():
         execute_cicflowmeter()
 
         # TODO Block into another code chunk
-        print(" - Converting csv into dataframe")
-        # Load the df and then read from memory
-        df = load_dataframe(f"flow_output/out.pcap_Flow.csv")
-        from_ip = df["Src IP"]
-        to_ip = df["Dst IP"]
+        try:
+            # Load the df from memory
+            print(" - Converting csv into dataframe")
+            df = load_dataframe(f"flow_output/out.pcap_Flow.csv")
+            from_ip = df["Src IP"]
+            to_ip = df["Dst IP"]
 
-        # Preprocess the df for making predictions
-        print(" - Cleaning dataframe and obtaining data")
-        preprocess_df(df)
-        X_train, X_test, Y_train, Y_test = get_train_test(df)
-        data = numpy.concatenate((X_test, X_train))
+            # Clean up the dataframe and create training testing data
+            print(" - Cleaning dataframe and obtaining data")
+            preprocess_df(df)
+            X_train, X_test, Y_train, Y_test = get_train_test(df)
+            data = numpy.concatenate((X_test, X_train))
+        except ValueError as e:
+            print(" - Not enough information inside of DF, restarting process")
+            continue
 
-        # Obtaining training results and probabilities
+            # Obtaining training results and probabilities
         result = lr.predict(data)
         proba = lr.predict_proba(data)
 
@@ -155,7 +159,6 @@ def main_loop():
         predictions.flush()
 
         os.remove("pcap_info/out.pcap")
-        pcap_file = open(f"pcap_info/out.pcap", "w", encoding="ISO-8859-1")
 
 
 if __name__ == "__main__":
