@@ -3,11 +3,7 @@ import pickle
 
 import numpy as np
 import pandas as pd
-from keras.layers import LSTM
-from keras.layers.core import Dense
-from keras.models import Sequential
-from keras.utils import np_utils
-from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
@@ -68,8 +64,13 @@ def parse_flow_data(path: str = "flow_output/out.pcap_Flow.csv"):
     # Load the df from memory
     print(" - Converting csv into dataframe")
     df = load_dataframe(path)
+
+    # Split up the dataframe
     from_ip = df["Src IP"]
     to_ip = df["Dst IP"]
+    protocol = df["Protocol"]
+    from_port = df["Src Port"]
+    to_port = df["Dst Port"]
 
     # Clean up the dataframe and create training testing data
     print(" - Cleaning dataframe and obtaining data")
@@ -77,7 +78,15 @@ def parse_flow_data(path: str = "flow_output/out.pcap_Flow.csv"):
     x_train, x_test, _, _ = get_train_test(df)
     data = np.concatenate((x_test, x_train))
 
-    return {"data": data, "from_ip": from_ip, "to_ip": to_ip}
+    # Create metadata dataframe for use in the main loop
+    metadata = pd.DataFrame()
+    metadata["from_ip"] = from_ip
+    metadata["to_ip"] = to_ip
+    metadata["protocol"] = protocol
+    metadata["from_port"] = from_port
+    metadata["to_port"] = to_port
+
+    return {"data": data, "metadata": metadata}
 
 
 def preprocess_df(df: pd.DataFrame) -> None:
@@ -96,11 +105,7 @@ def preprocess_df(df: pd.DataFrame) -> None:
         axis=1,
     )
 
-    # Apply a bunch of pre-processing to the columns
     df["Label"] = df["Label"].apply(lambda x: 1 if x == "ddos" else 0)
-    # df["Src IP"] = df["Src IP"].apply(lambda x: int(ipaddress.IPv4Address(x)))
-    # df["Dst IP"] = df["Dst IP"].apply(lambda x: int(ipaddress.IPv4Address(x)))
-    # df["Protocol"] = df.Protocol.astype("category")
 
     for row in df.columns:
         df[row] = np.nan_to_num(df[row])
@@ -118,6 +123,7 @@ def get_train_test(df: pd.DataFrame) -> tuple:
     x_data = []
     y_data = []
 
+    # Separate features from the target
     for row in df.values:
         x_data.append(row[:-1])
         y_data.append(row[-1])
@@ -135,21 +141,6 @@ def compute_logistic_model(X_train, X_test, Y_train, Y_test) -> LogisticRegressi
     lr.fit(X_train, Y_train)
     print(f"Sklearn accuracy: {accuracy_score(lr.predict(X_test), Y_test)}")
     return lr
-
-
-def compute_neural_network(X_train, X_test, Y_train, Y_test):
-    """
-        Create our NN model
-    """
-    # Create a sequential model
-    model = Sequential()
-    model.add(Dense(12, input_dim=77, activation="sigmoid"))
-    model.add(Dense(6, activation="sigmoid"))
-    model.add(Dense(2, activation="sigmoid"))
-    model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"])
-    model.fit(
-        X_train, np_utils.to_categorical(Y_train), epochs=200, batch_size=50, verbose=1
-    )
 
 
 def create_lr() -> LogisticRegression:
