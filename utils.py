@@ -5,10 +5,50 @@ import subprocess
 import time
 
 import numpy
-import shortuuid
+import pandas as pd
 
 from data import (compute_logistic_model, create_lr, get_train_test,
                   load_dataframe, preprocess_df)
+
+
+def log_ip_flow(out_info: zip):
+    """
+        Log the ip flow information
+
+        Args:
+            out_info - a Zip object containing:
+                from_ip    - pandas series
+                to_ip list - pandas series
+                prediction - np array of prediction
+                proba      - np array of pred probabilities
+
+        Returns:
+            Return the output buffer for writing to files
+    """
+    out_buffer = []
+    for from_ip, to_ip, prediction, proba in out_info:
+        src = f"Src IP: {from_ip}"
+        dst = f"Dst IP: {to_ip}"
+        pred = f"Prediction: {'Malicious' if prediction else 'Safe'}"
+        prob = f"Probabilities:"
+        safe = f" - Safe - {proba[0] * 100:.2f}%"
+        mal = f" - Malicious - {proba[1]*100:.2f}%"
+
+        out_buffer.append(
+            ["---IP BLOCK---", src, dst, pred, prob, safe, mal, "--------"]
+        )
+
+        # Monolithoc print statement
+        print("---IP---")
+        print(src)
+        print(dst)
+        print(pred)
+        print(prob)
+        print(safe)
+        print(mal)
+        print("--------")
+
+    return out_buffer
 
 
 def capture_pcap(interface: str = "eth0", line_count=1000):
@@ -18,6 +58,7 @@ def capture_pcap(interface: str = "eth0", line_count=1000):
     # pcap command with tcpdump
     # TODO Enable multiple os commands (Will have to determine the OS)
     pcap_cmd = ["tcpdump", "-i", interface, "-s", "65535", "-w", "-"]
+
     # Spawn the pcap process
     process = subprocess.Popen(
         pcap_cmd,
@@ -68,98 +109,3 @@ def execute_cicflowmeter():
     # If the exit wasn't graceful, throw an error
     if exit_status:
         raise subprocess.CalledProcessError(exit_status, cic_cmd)
-
-
-def main_loop():
-    """
-        Enter the main loop of the program, executing the sub processes
-        and executing model commands
-    """
-    # Init program vars
-    predictions = open("predictions.txt", "w+")
-    running = True
-    model = True
-
-    # Load the model from memory or from a beautiful pickle file
-    # TODO fix the logic behind this
-    if not model:
-        lr_file = open("lr.pickle", "wb")
-        lr = create_lr()
-        pickle.dump(lr, lr_file)
-        lr_file.close()
-    else:
-        lr_file = open("lr.pickle", "rb")
-        lr = pickle.load(lr_file)
-        lr_file.close()
-
-    while running:
-        # Iterate through every pcap captured from my specific ethernet port
-        pcap_file = open(f"pcap_info/out.pcap", "w", encoding="ISO-8859-1")
-        pcap_list = capture_pcap("wlo1")
-
-        # The counter controls the amount of writes that occur.
-        # TODO Enable the counter to be customized via user interaction
-        print(f" - Writing packets to out.pcap file")
-
-        pcap_file.writelines(pcap_list)
-        pcap_file.close()
-
-        print(" - Writing to csv")
-        execute_cicflowmeter()
-
-        # TODO Block into another code chunk
-        try:
-            # Load the df from memory
-            print(" - Converting csv into dataframe")
-            df = load_dataframe(f"flow_output/out.pcap_Flow.csv")
-            from_ip = df["Src IP"]
-            to_ip = df["Dst IP"]
-
-            # Clean up the dataframe and create training testing data
-            print(" - Cleaning dataframe and obtaining data")
-            preprocess_df(df)
-            X_train, X_test, Y_train, Y_test = get_train_test(df)
-            data = numpy.concatenate((X_test, X_train))
-        except ValueError as e:
-            print(" - Not enough information inside of DF, restarting process")
-            continue
-
-            # Obtaining training results and probabilities
-        result = lr.predict(data)
-        proba = lr.predict_proba(data)
-
-        # Write the status of the connections between IPs
-        out_buffer = []
-        out_info = zip(from_ip, to_ip, result, proba)
-        for from_ip, to_ip, prediction, proba in out_info:
-            src = f"Src IP: {from_ip}"
-            dst = f"Dst IP: {to_ip}"
-            pred = f"Prediction: {'Malicious' if prediction else 'Safe'}"
-            prob = f"Probabilities:"
-            safe = f" - Safe - {proba[0] * 100:.2f}%"
-            mal = f" - Malicious - {proba[1]*100:.2f}%"
-
-            out_buffer.append(
-                ["---IP BLOCK---", src, dst, pred, prob, safe, mal, "--------"]
-            )
-
-            # Monolithoc print statement
-            # TODO FIX IMMEDIATELY!
-            print("---IP---")
-            print(src)
-            print(dst)
-            print(pred)
-            print(prob)
-            print(safe)
-            print(mal)
-            print("--------")
-
-        # Write predictions file
-        predictions.writelines(line + "\n" for line in out_buffer[0])
-        predictions.flush()
-
-        os.remove("pcap_info/out.pcap")
-
-
-if __name__ == "__main__":
-    main_loop()
