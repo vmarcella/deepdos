@@ -23,8 +23,15 @@ and tool to create flow csvs from .pcap files. Their site and all resources have
 ## How to run/setup
 deepdos is currently only available on linux, but can simply be run by these two commands:
 ```bash
+# clone repo
+git clone https://github.com/C3NZ/deepdos
+
 # install dependencies and allow pcap information to be captured without root.
 sudo ./setup.sh
+
+# Install requirements
+pip3 install -r requirements.txt
+
 # Execute the script
 python3 utils.py
 ```
