@@ -6,6 +6,7 @@ import pickle
 
 import numpy
 
+from args import parse_args
 from data import (get_train_test, load_dataframe, load_model, parse_flow_data,
                   preprocess_df)
 from utils import capture_pcap, execute_cicflowmeter, log_ip_flow
@@ -68,5 +69,13 @@ def main_loop():
         os.remove("pcap_info/out.pcap")
 
 
-if __name__ == "__main__":
+def start_execution():
+    """
+        Parse arguments and configure the main loop
+    """
+    options = parse_args()
     main_loop()
+
+
+if __name__ == "__main__":
+    start_execution()
