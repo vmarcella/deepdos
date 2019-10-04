@@ -51,7 +51,9 @@ def parse_args():
                 print(f"\t\tPTP: {info.ptp}")
             print()
 
-        print("Pick one of these interfaces to listen to traffic on :)")
+        print(
+            "Pick one of these interfaces to listen to traffic on, and then rerun the command with it :)"
+        )
         exit()
 
     # Use the passed in interface or exit app
