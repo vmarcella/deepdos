@@ -1,5 +1,12 @@
-# Install pcapdev
-sudo apt install libpcap-dev
+OS="$(uname -s)"
+
+# Install pcapdev for either macos or linux
+if [ $OS = "Linux" ]; then
+    sudo apt install libpcap-dev
+else
+    brew install libpcap
+fi
+
 # Create PCAP
 sudo groupadd pcap
 # add your user to the PCAP group
