@@ -40,7 +40,18 @@ def parse_args():
     # Find all interfaces if specified and then exit
     if args.find_interface:
         addrs = psutil.net_if_addrs()
-        print(addrs)
+        for address, nic in addrs.items():
+            print(f"interface: {address}")
+            for info in nic:
+                print("\tAssociated address:")
+                print(f"\t\tFamily: {info.family}")
+                print(f"\t\tAddress: {info.address}")
+                print(f"\t\tNetmask: {info.netmask}")
+                print(f"\t\tBroadcast: {info.broadcast}")
+                print(f"\t\tPTP: {info.ptp}")
+            print()
+
+        print("Pick one of these interfaces to listen to traffic on :)")
         exit()
 
     # Use the passed in interface or exit app
