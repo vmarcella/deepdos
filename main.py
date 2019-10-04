@@ -83,6 +83,7 @@ class DeepDos:
         if self.firewall:
             self.firewall.track_ips(malicious_ips)
         return flow_logs
+
     def main_loop(self):
         """
             Enter the main loop of the program, executing the sub processes

@@ -1,48 +1,8 @@
 ---IP BLOCK---
 Src IP: 192.168.1.247
-Dst IP: 52.37.243.173
+Dst IP: 104.17.140.236
 Prediction: Safe
 Probabilities:
- - Safe - 78.69%
- - Malicious - 21.31%
---------
----IP BLOCK---
-Src IP: 74.125.170.220
-Dst IP: 192.168.1.247
-Prediction: Safe
-Probabilities:
- - Safe - 81.71%
- - Malicious - 18.29%
---------
----IP BLOCK---
-Src IP: 192.168.1.247
-Dst IP: 52.37.243.173
-Prediction: Safe
-Probabilities:
- - Safe - 83.64%
- - Malicious - 16.36%
---------
----IP BLOCK---
-Src IP: 192.168.1.247
-Dst IP: 52.72.210.121
-Prediction: Safe
-Probabilities:
- - Safe - 59.30%
- - Malicious - 40.70%
---------
----IP BLOCK---
-Src IP: 52.72.210.121
-Dst IP: 192.168.1.247
-Prediction: Malicious
-Probabilities:
- - Safe - 46.28%
- - Malicious - 53.72%
---------
----IP BLOCK---
-Src IP: 192.168.1.247
-Dst IP: 140.82.114.25
-Prediction: Malicious
-Probabilities:
- - Safe - 0.00%
- - Malicious - 100.00%
+ - Safe - 87.52%
+ - Malicious - 12.48%
 --------

@@ -15,7 +15,6 @@ def log_ip_flow(from_ip, to_ip, prediction, proba):
         Returns:
             Return the output buffer for writing to files
     """
-    curr_flow_buffer = []
     src = f"Src IP: {from_ip}"
     dst = f"Dst IP: {to_ip}"
     pred = f"Prediction: {'Malicious' if prediction else 'Safe'}"
@@ -44,15 +43,16 @@ def examine_flow_packets(flow_info):
     malicious_ips = []
     flow_buffer = []
 
+    # Iterate through all of the flow information
     for row, prediction, proba in zip(metadata.values, predictions, probas):
         from_ip, to_ip, proto, from_port, to_port = row
         buffer = log_ip_flow(from_ip, to_ip, prediction, proba)
         flow_buffer.append(buffer)
 
+        # If this is classified as malicious, let's report this incident.
         if prediction:
             malicious_ips.append(((from_ip, to_ip), (from_port, to_port), proto))
 
-    print(malicious_ips)
     return malicious_ips, flow_buffer
 
 
