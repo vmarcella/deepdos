@@ -7,7 +7,6 @@ from keras.layers import LSTM
 from keras.layers.core import Dense
 from keras.models import Sequential
 from keras.utils import np_utils
-from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
