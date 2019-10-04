@@ -23,7 +23,11 @@ def create_parser():
     )
 
     parser.add_argument(
-        "--find-interface", action="store_true", dest="find_interface", default=False
+        "--find-interface",
+        action="store_true",
+        dest="find_interface",
+        help="List all of your devices network interfaces. Good if you don't know what interfaces your device has",
+        default=False,
     )
 
     return parser.parse_args()
