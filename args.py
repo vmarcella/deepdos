@@ -13,9 +13,11 @@ def create_parser():
         Returns:
             The arguments
     """
+    # Create the arg parser
     parser = argparse.ArgumentParser(
         description="Welcome to deepdos, the machine learning/ai based ddos analysis/mitigation service"
     )
+
     # Read in the interface
     parser.add_argument(
         "-i",
@@ -63,9 +65,10 @@ def obtain_interface_data(desired_interface):
     addrs = psutil.net_if_addrs()
     data = {}
 
-    # Iterate through the all of the interfaces
+    # Check if the desired interface is valid
     if desired_interface in addrs:
         nic = addrs[desired_interface]
+        # Store all associated addresses for managing our firewall
         for info in nic:
             # add data for the current address family
             data[f"{info.family}"] = {

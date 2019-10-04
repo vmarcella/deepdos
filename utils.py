@@ -1,7 +1,7 @@
 import subprocess
 
 
-def log_ip_flow(out_info: zip):
+def log_ip_flow(from_ip, to_ip, prediction, proba):
     """
         Log the ip flow information
 
@@ -15,40 +15,52 @@ def log_ip_flow(out_info: zip):
         Returns:
             Return the output buffer for writing to files
     """
-    out_buffer = []
+    curr_flow_buffer = []
+    src = f"Src IP: {from_ip}"
+    dst = f"Dst IP: {to_ip}"
+    pred = f"Prediction: {'Malicious' if prediction else 'Safe'}"
+    prob = f"Probabilities:"
+    safe = f" - Safe - {proba[0] * 100:.2f}%"
+    mal = f" - Malicious - {proba[1]*100:.2f}%"
 
-    # Print out each flow block
-    for from_ip, to_ip, prediction, proba in out_info:
-        src = f"Src IP: {from_ip}"
-        dst = f"Dst IP: {to_ip}"
-        pred = f"Prediction: {'Malicious' if prediction else 'Safe'}"
-        prob = f"Probabilities:"
-        safe = f" - Safe - {proba[0] * 100:.2f}%"
-        mal = f" - Malicious - {proba[1]*100:.2f}%"
+    # Monolithoc print statement
+    print("---IP---")
+    print(src)
+    print(dst)
+    print(pred)
+    print(prob)
+    print(safe)
+    print(mal)
+    print("--------")
 
-        out_buffer.append(
-            ["---IP BLOCK---", src, dst, pred, prob, safe, mal, "--------"]
-        )
+    return ("---IP BLOCK---", src, dst, pred, prob, safe, mal, "--------")
 
-        # Monolithoc print statement
-        print("---IP---")
-        print(src)
-        print(dst)
-        print(pred)
-        print(prob)
-        print(safe)
-        print(mal)
-        print("--------")
 
-    return out_buffer
+def examine_flow_packets(flow_info):
+    """
+        Examine and log all flow activity. Will return all malicious packets
+    """
+    metadata, predictions, probas = flow_info
+    malicious_ips = []
+    flow_buffer = []
+
+    for row, prediction, proba in zip(metadata.values, predictions, probas):
+        from_ip, to_ip, proto, from_port, to_port = row
+        buffer = log_ip_flow(from_ip, to_ip, prediction, proba)
+        flow_buffer.append(buffer)
+
+        if prediction:
+            malicious_ips.append(((from_ip, to_ip), (from_port, to_port), proto))
+
+    print(malicious_ips)
+    return malicious_ips, flow_buffer
 
 
 def capture_pcap(interface, line_count=1000):
     """
-        Capturing pcap information
+        Capturing pcap information 
     """
-    # pcap command with tcpdump
-    # TODO Enable multiple os commands (Will have to determine the OS)
+    # pcap command with tcpdump (supported by both macos and )
     pcap_cmd = ["tcpdump", "-i", interface, "-s", "65535", "-w", "-"]
 
     # Spawn the pcap process
