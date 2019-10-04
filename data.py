@@ -51,15 +51,15 @@ def load_model(has_model: bool = True) -> LogisticRegression:
     # Load the model from memory or from a beautiful pickle file
     if has_model:
         lr_file = open("lr.pickle", "rb")
-        lr = pickle.load(lr_file)
+        model = pickle.load(lr_file)
         lr_file.close()
     else:
         lr_file = open("lr.pickle", "wb")
-        lr = create_lr()
-        pickle.dump(lr, lr_file)
+        model = create_lr()
+        pickle.dump(model, lr_file)
         lr_file.close()
 
-    return lr
+    return model
 
 
 def parse_flow_data(path: str = "flow_output/out.pcap_Flow.csv"):

@@ -1,3 +1,6 @@
+"""
+    The main functionality of deepdos
+"""
 import os
 import pickle
 
@@ -21,6 +24,7 @@ def main_loop():
     # load logistic regression model
     model = load_model()
 
+    # Execute the main loop
     while running:
         # Iterate through every pcap captured from my specific ethernet port
         pcap_file = open(f"pcap_info/out.pcap", "w", encoding="ISO-8859-1")
