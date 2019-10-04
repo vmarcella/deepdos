@@ -1,14 +1,4 @@
-import binascii
-import os
-import pickle
 import subprocess
-import time
-
-import numpy
-import pandas as pd
-
-from data import (compute_logistic_model, create_lr, get_train_test,
-                  load_dataframe, preprocess_df)
 
 
 def log_ip_flow(out_info: zip):
