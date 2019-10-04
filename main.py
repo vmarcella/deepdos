@@ -2,20 +2,19 @@
     The main functionality of deepdos
 """
 import os
-import pickle
-
-import numpy
 
 from args import parse_args
-from data import (get_train_test, load_dataframe, load_model, parse_flow_data,
-                  preprocess_df)
+from data import load_model, parse_flow_data
 from utils import capture_pcap, execute_cicflowmeter, log_ip_flow
 
 
-def main_loop():
+def main_loop(options: dict):
     """
         Enter the main loop of the program, executing the sub processes
         and executing model commands
+
+        Args:
+            options - The dictionary containing values that 
     """
     # Init program vars
     predictions = open("predictions.txt", "w+")
@@ -29,7 +28,7 @@ def main_loop():
     while running:
         # Iterate through every pcap captured from my specific ethernet port
         pcap_file = open(f"pcap_info/out.pcap", "w", encoding="ISO-8859-1")
-        pcap_list = capture_pcap("wlo1")
+        pcap_list = capture_pcap(options["interface"])
 
         # The counter controls the amount of writes that occur.
         print(f" - Writing packets to out.pcap file")
@@ -74,7 +73,7 @@ def start_execution():
         Parse arguments and configure the main loop
     """
     options = parse_args()
-    main_loop()
+    main_loop(options)
 
 
 if __name__ == "__main__":
