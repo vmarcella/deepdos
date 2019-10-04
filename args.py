@@ -46,14 +46,11 @@ def create_parser():
 
     # Activate firemode
     parser.add_argument(
-        "--firewall-linux",
-        action="store_true",
-        dest="firewall_linux",
-        help="Turn on firewall mode for linux. The naughty list or -n argument is default to 10",
-        default=False,
+        "--firewall",
+        action="store",
+        help="Turn on firewall mode for the given system. linux for Linux systems and macos for mac (Not yet supported)",
+        default="",
     )
-
-    parser.add_argument()
 
     return parser.parse_args()
 
@@ -84,6 +81,9 @@ def obtain_interface_data(desired_interface):
 
 
 def list_interface_data():
+    """
+        List all interface data.
+    """
     addrs = psutil.net_if_addrs()
     for address, nic in addrs.items():
         print(f"interface: {address}")
@@ -128,10 +128,12 @@ def parse_args():
         )
         exit()
 
-    # Check if firewall mode is enabled
-    if args.firewall_linux:
-        options["firewall_mode"] = True
+    # Check if firewall is set and set to a valid system
+    if args.firewall and args.firewall.lower() in ("linux", "macos"):
+        options["firewall"] = args.firewall.lower()
     else:
-        options["firewall_mode"] = False
+        options["firewall"] = None
+
+    options["naughty_count"] = args.naughty_count
 
     return options
