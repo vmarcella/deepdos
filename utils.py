@@ -16,6 +16,8 @@ def log_ip_flow(out_info: zip):
             Return the output buffer for writing to files
     """
     out_buffer = []
+
+    # Print out each flow block
     for from_ip, to_ip, prediction, proba in out_info:
         src = f"Src IP: {from_ip}"
         dst = f"Dst IP: {to_ip}"
@@ -41,7 +43,7 @@ def log_ip_flow(out_info: zip):
     return out_buffer
 
 
-def capture_pcap(interface: str = "eth0", line_count=1000):
+def capture_pcap(interface, line_count=1000):
     """
         Capturing pcap information
     """
