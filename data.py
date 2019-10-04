@@ -1,4 +1,5 @@
 import ipaddress
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -39,6 +40,47 @@ def load_dataframe(
     return df
 
 
+def load_model(has_model: bool = True) -> LogisticRegression:
+    """
+        Load or create the logistic regression model.
+
+        Returns:
+            A logistic regression model either created from scratch or
+            loaded from a pickle file
+    """
+    # Load the model from memory or from a beautiful pickle file
+    if has_model:
+        lr_file = open("lr.pickle", "rb")
+        lr = pickle.load(lr_file)
+        lr_file.close()
+    else:
+        lr_file = open("lr.pickle", "wb")
+        lr = create_lr()
+        pickle.dump(lr, lr_file)
+        lr_file.close()
+
+    return lr
+
+
+def parse_flow_data(path: str = "flow_output/out.pcap_Flow.csv"):
+    """
+        Parse the model data
+    """
+    # Load the df from memory
+    print(" - Converting csv into dataframe")
+    df = load_dataframe(path)
+    from_ip = df["Src IP"]
+    to_ip = df["Dst IP"]
+
+    # Clean up the dataframe and create training testing data
+    print(" - Cleaning dataframe and obtaining data")
+    preprocess_df(df)
+    x_train, x_test, _, _ = get_train_test(df)
+    data = np.concatenate((x_test, x_train))
+
+    return {"data": data, "from_ip": from_ip, "to_ip": to_ip}
+
+
 def preprocess_df(df: pd.DataFrame) -> None:
     """
         Preprocess the dataframe for erraneous/irrelevant columns (In place)
@@ -46,6 +88,8 @@ def preprocess_df(df: pd.DataFrame) -> None:
         Args:
             df: The ddos dataframe to be processed
 
+        Returns:
+            Nothing
     """
     df.drop(
         ["Flow ID", "Timestamp", "Src IP", "Dst IP", "Flow Byts/s", "Flow Pkts/s"],
@@ -62,14 +106,14 @@ def preprocess_df(df: pd.DataFrame) -> None:
     for row in df.columns:
         df[row] = np.nan_to_num(df[row])
 
-    df = df[~df.isin([np.nan, np.inf, -np.inf]).any(1)]
-
 
 def get_train_test(df: pd.DataFrame) -> tuple:
     """
         Obtain the training and testing data.
 
         Returns:
+            a tuple containing the training features, testing features,
+            training target, and testing target
 
     """
     x_data = []
@@ -110,6 +154,9 @@ def compute_neural_network(X_train, X_test, Y_train, Y_test):
 
 
 def create_lr() -> LogisticRegression:
+    """
+        Create a logistic regression given our base dataframe
+    """
     df: pd.DataFrame = load_dataframe()
     preprocess_df(df)
     X_train, X_test, Y_train, Y_test = get_train_test(df)
