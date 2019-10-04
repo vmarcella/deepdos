@@ -25,6 +25,9 @@ class Offender:
         self.offenses += 1
         self.port_mappings.add((port, protocol))
 
+    def __repr__(self):
+        return f"src: {self.src} - off: {self.offenses} - port/proto: {self.port_mappings}, out: {outbound}"
+
 
 class Firewall(ABC):
     """
@@ -76,6 +79,7 @@ class Firewall(ABC):
         """
             Track ips that have been marked malicious
         """
+        print(self.offenders)
         interface_info = self.interface_data[self.ip_version]
         local_ip = interface_info["address"]
 
@@ -126,6 +130,7 @@ class IPtable(Firewall):
             to_ip on the desired interface for the specified protocol.
         """
         print("- Creating rule for an offender")
+        print(offender)
         return
 
         # Unpack some variables
