@@ -26,7 +26,7 @@ class Offender:
         self.port_mappings.add((port, protocol))
 
     def __repr__(self):
-        return f"src: {self.src} - off: {self.offenses} - port/proto: {self.port_mappings}, out: {outbound}"
+        return f"src: {self.src} - off: {self.offenses} - port/proto: {self.port_mappings}, out: {self.outbound}"
 
 
 class Firewall(ABC):
@@ -42,7 +42,7 @@ class Firewall(ABC):
         self.offenders = {}
         self.input_banned = {}
         self.output_banned = {}
-        self.ip_version = 2
+        self.ip_version = "2"
 
     @staticmethod
     def create_firewall(
@@ -65,17 +65,20 @@ class Firewall(ABC):
     def create_rule(self, offender: Offender):
         """
             Create a firewall rule given:
-                ips - tuple(from_ip, to_ip) 
+                ips - tuple(from_ip, to_ip)
                 ports - tuple(from_port, to_port)
                 protocol: "TCP"
         """
         return NotImplemented
 
     @abstractmethod
-    def remove_rules(self):
+    def remove_rule(self):
+        """
+            Remove rules for the firewall
+        """
         return NotImplemented
 
-    def track_ips(self, connection_list):
+    def track_flows(self, malicious_flows):
         """
             Track ips that have been marked malicious
         """
@@ -84,31 +87,31 @@ class Firewall(ABC):
         local_ip = interface_info["address"]
 
         # Iterate through the malicious ips list
-        for ips, ports, protocol in connection_list:
-            from_ip, to_ip = ips
-            from_port, to_port = ports
+        for flow in malicious_flows:
 
             # Was this connection outbound or inbound?
-            outbound = True if from_ip == local_ip else False
-            port = from_port if outbound else to_port
-            connection = f"{from_ip}/{to_ip}"
+            outbound = True if flow.from_ip == local_ip else False
+
+            # Which port on are computer are we blocking??
+            port = flow.from_port if outbound else flow.to_port
 
             # Check if the connection occurred
-            if connection in self.offenders:
-                offender = self.offenders[connection]
+            if flow.connection in self.offenders:
+                offender = self.offenders[flow.connection]
 
                 # They've had way too many violations, it's time to ban this malicious data.
                 if offender.offenses > self.naughty_count:
                     self.create_rule(offender)
-                    del self.offenders[connection]
+                    del self.offenders[flow.connection]
                 else:
-                    print(" - Adding an offense")
-                    offender.add_offense(port, protocol)
+                    print(" - Adding an offense to flow:")
+                    print(f"\t{flow}")
+                    offender.add_offense(port, flow.protocol)
 
             else:
-                # Register the connection offender :(
-                self.offenders[connection] = Offender(
-                    connection, port, protocol, outbound
+                # Register the flow as an offender :(
+                self.offenders[flow.connection] = Offender(
+                    flow.connection, port, flow.protocol, outbound
                 )
 
 
@@ -119,7 +122,8 @@ class IPtable(Firewall):
 
     def __init__(self, interface, interface_data, naughty_count):
         super().__init__(interface, interface_data, naughty_count)
-        # Instantiate the filter table and all input/output rules on it
+        # Instantiate the filter table with the input and output chains readily accessible
+        # for writing rules.
         self.filter_table = iptc.Table(iptc.Table.FILTER)
         self.input_chain = iptc.Chain(self.filter_table, "INPUT")
         self.output_chain = iptc.Chain(self.filter_table, "OUTPUT")
@@ -156,7 +160,7 @@ class IPtable(Firewall):
             match.dport = port
             rule.add_match(match)
 
-        # Choose which chain to output to
+        # Choose which chain to create the rule for
         if offender.outgoing:
             self.output_chain.insert_rule(rule)
             self.output_banned[rule.src] = time.time() // 60
@@ -164,5 +168,9 @@ class IPtable(Firewall):
             self.input_chain.insert_rule(rule)
             self.input_banned[rule.src] = time.time() // 60
 
-    def remove_rules(self):
-        pass
+    def remove_rule(self):
+        """
+        yeet
+        """
+        self.x = 0
+        return self.x
