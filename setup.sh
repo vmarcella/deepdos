@@ -1,19 +1,19 @@
 OS="$(uname -s)"
 
-# Install pcapdev for either macos or linux
-if [ $OS = "Linux" ]; then
+# Setup the application from source with a virtual environment
+if [ "$OS" = "Linux" ]; then
+    # Install dependencies
     sudo apt install libpcap-dev
+
+    # Install virtualenv to the current user if not already installed
+    pip3 install virtualenv --user
+
+    # Create the virtualenv and install dependencies locally
+    virtualenv -p python3 venv
+    source venv/bin/activate 
+    pip3 install -r requirements.txt
 else
     brew install libpcap
+    echo "Non-linux based operating systems aren't supported yet, sorry :("
 fi
 
-# Create PCAP
-sudo groupadd pcap
-# add your user to the PCAP group
-sudo usermod -a -G pcap $USER
-# Change the ownership of tcpdump to be owned by PCAP
-sudo chgrp pcap /usr/sbin/tcpdump
-# give file capabilities for caputring raw packets and network admin items
-sudo setcap cap_net_raw,cap_net_admin=eip /usr/sbin/tcpdump
-# creaate a sym link for tcp dump in the users bin
-sudo ln -s /usr/sbin/tcpdump /usr/bin/tcpdump
