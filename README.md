@@ -5,7 +5,7 @@ Welcome to deepdos, the python program written to monitor and potentially secure
 from ddos attacks! While not currently utilizing deep learning to classify packets, deepdos currently
 utilizes logistic regression in order to classify packets and has so far been trained on 200,000 packets from
 all sorts of DDOS attacks and normal traffic setup. This project couldn't have been
-done without the help of the University of Brunswick providing both the original flow dataset 
+done without the help of the Canadian Institute for Cybersecurity with providing both the original flow dataset 
 and tool to create flow csvs from .pcap files. Their site and all resources have been linked at the bottom.
 
 
@@ -59,3 +59,4 @@ my schedule, and any other variable factors.
 
 [CICnetflowmeter](http://www.netflowmeter.ca/netflowmeter.html)
 
+[CIC License](CIC_LICENSE.txt)
