@@ -35,12 +35,26 @@ def log_ip_flow(from_ip, to_ip, prediction, proba):
     return ("---IP BLOCK---", src, dst, pred, prob, safe, mal, "--------")
 
 
+class MaliciousFlow:
+    """
+        Tracking malicious flows more efficiently with class containers
+    """
+
+    def __init__(self, ips, ports, protocol):
+        self.from_ip, self.to_ip = ips
+        self.from_port, self.to_port = ports
+        self.protocol = protocol
+
+    def __repr__(self):
+        return f"{self.from_ip}/{self.to_ip}-{self.from_port}:{self.to_port}-{self.protocol}"
+
+
 def examine_flow_packets(flow_info):
     """
         Examine and log all flow activity. Will return all malicious packets
     """
     metadata, predictions, probas = flow_info
-    malicious_ips = []
+    malicious_flows = []
     flow_buffer = []
 
     # Iterate through all of the flow information
@@ -51,14 +65,17 @@ def examine_flow_packets(flow_info):
 
         # If this is classified as malicious, let's report this incident.
         if prediction:
-            malicious_ips.append(((from_ip, to_ip), (from_port, to_port), proto))
+            # Track a new malicious flow
+            malicious_flows.append(
+                MaliciousFlow((from_ip, to_ip), (from_port, to_port), proto)
+            )
 
-    return malicious_ips, flow_buffer
+    return malicious_flows, flow_buffer
 
 
 def capture_pcap(interface, line_count=1000):
     """
-        Capturing pcap information 
+        Capturing pcap information
     """
     # pcap command with tcpdump (supported by both macos and )
     pcap_cmd = ["tcpdump", "-i", interface, "-s", "65535", "-w", "-"]
