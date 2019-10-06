@@ -24,7 +24,6 @@ class DeepDos:
         self.interface = options["interface"]
         self.interface_data = options["interface_data"]
         self.active_firewall = options["firewall"]
-        self.naughty_count = options["naughty_count"]
 
         # Predicitons file
         self.flow_file = open("flow_file.txt", "w+")
@@ -36,7 +35,7 @@ class DeepDos:
                     self.interface,
                     self.interface_data,
                     self.active_firewall,
-                    self.naughty_count,
+                    options["naughty_count"],
                 )
             except iptc.ip4tc.IPTCError:
                 print("You need to be root in order to execute the program")
@@ -81,8 +80,10 @@ class DeepDos:
         result_data = flow_metadata, result, proba
         malicious_flows, flow_logs = examine_flow_packets(result_data)
         print([flow for flow in malicious_flows])
+
+        # If there is an active firewall, track all malicious flows
         if self.firewall:
-            self.firewall.track_ips(malicious_flows)
+            self.firewall.track_flows(malicious_flows)
         return flow_logs
 
     def main_loop(self):
