@@ -79,9 +79,10 @@ class DeepDos:
 
         # Flag Ip flow
         result_data = flow_metadata, result, proba
-        malicious_ips, flow_logs = examine_flow_packets(result_data)
+        malicious_flows, flow_logs = examine_flow_packets(result_data)
+        print([flow for flow in malicious_flows])
         if self.firewall:
-            self.firewall.track_ips(malicious_ips)
+            self.firewall.track_ips(malicious_flows)
         return flow_logs
 
     def main_loop(self):
