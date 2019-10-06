@@ -7,7 +7,7 @@ if [ $OS = "Linux" ]; then
     sudo apt remove libpcap-dev
     
     # Deactivate the virtual environment if it's running
-    if [[ "$VIRTUAL_ENV" != "" ]]; then
+    if [[ "$VIRTUAL_ENV" == "venv" ]]; then
         deactivate
     fi
 

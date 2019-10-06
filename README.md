@@ -28,7 +28,7 @@ deepdos is currently only available on linux, but can simply be run by these two
 git clone https://github.com/C3NZ/deepdos
 
 # install dependencies and allow pcap information to be captured without root.
-source ./setup.sh
+source bash/setup.sh
 
 # Install requirements
 pip3 install -r requirements.txt
@@ -36,6 +36,15 @@ pip3 install -r requirements.txt
 # Execute the script (Needs sudo in order to execute tcpdump and access iptables)
 sudo python3 utils.py
 ```
+This will load you into a virtualenv with all of the dependencies installed and ready to use.
+
+To remove all of the dependencies after you're done using the tool, you can simply run:
+
+```bash
+source bash/remove.sh
+```
+
+and then remove the folder from your computer :)
 
 This will immediately start creating necessary folders, capturing packets, and then identifying
 the traffic that is being exchanged in and out of your current computer.
