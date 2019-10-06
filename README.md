@@ -13,7 +13,7 @@ and tool to create flow csvs from .pcap files. Their site and all resources have
 ### Short term goals
 - [ ] Add LR test metrics on startup
 - [ ] Update LR to use better data for better performance
-- [ ] Add command line interface
+- [*] Add command line interface
 
 ### Long term goals
 - [ ] Convert Logistic regression model to a neural network
@@ -21,19 +21,20 @@ and tool to create flow csvs from .pcap files. Their site and all resources have
 - [ ] Add ddos mitigation/firewall rule support
 
 ## How to run/setup
+### Running from scratch
 deepdos is currently only available on linux, but can simply be run by these two commands:
 ```bash
 # clone repo
 git clone https://github.com/C3NZ/deepdos
 
 # install dependencies and allow pcap information to be captured without root.
-sudo ./setup.sh
+source ./setup.sh
 
 # Install requirements
 pip3 install -r requirements.txt
 
-# Execute the script
-python3 utils.py
+# Execute the script (Needs sudo in order to execute tcpdump and access iptables)
+sudo python3 utils.py
 ```
 
 This will immediately start creating necessary folders, capturing packets, and then identifying
