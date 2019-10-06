@@ -5,6 +5,9 @@ ddos_balanced
 flow_output
 pcap_info
 
+# virtualenv folder
+venv
+
 # logs for CICflowmeter
 bin/CICFlowMeter-4.0/bin/logs
 
