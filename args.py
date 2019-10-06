@@ -46,7 +46,7 @@ def create_parser():
         default=False,
     )
 
-    # Activate firemode
+    # Activate firewall mode with a specified firewall
     parser.add_argument(
         "--firewall",
         action="store",
@@ -78,9 +78,9 @@ def obtain_interface_data(desired_interface):
                 "ptp": str(info.ptp),
             }
         return data
-    else:
-        # Couldn't find the requested interface
-        raise ValueError(f"Couldn't find the requested interface: {desired_interface}")
+
+    # Couldn't find the requested interface
+    raise ValueError(f"Couldn't find the requested interface: {desired_interface}")
 
 
 def list_interface_data():
@@ -104,6 +104,10 @@ def list_interface_data():
         "Pick one of these interfaces to listen to traffic on, and then rerun the command with it :)"
     )
     exit()
+
+
+def check_root():
+    return
 
 
 def parse_args():
