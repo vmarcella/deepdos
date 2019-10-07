@@ -1,2 +1,2 @@
-graft bin
-graft models
+graft src/external
+graft src/models
