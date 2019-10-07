@@ -12,7 +12,7 @@ README = (DIR / "README.md").read_text()
 
 setup(
     name="deepdos",
-    version="0.9.92",
+    version="0.9.93",
     description="A machine learning/AI based approach to protecting your devices against ddos attacks",
     long_description=README,
     long_description_content_type="text/markdown",
