@@ -48,6 +48,18 @@ the traffic that is being exchanged in and out of your current computer.
 This also assumes that you have java installed for the program to execute the CICFlowMeter jar
 file.
 
+### Installing with pip
+#### Linux
+```bash
+sudo apt install libpcap-dev
+pip3 install deepdos
+```
+
+#### Macos
+```bash
+brew install libpcap
+pip3 install deepdos
+```
 ## Usage
 ```
 usage: src [-h] [-i INTERFACE] [-n NAUGHTY_COUNT] [--find-interface]
