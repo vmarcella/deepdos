@@ -28,7 +28,7 @@ setup(
         "Operating System :: MacOS",
         "Development Status :: 2 - Pre-Alpha",
     ],
-    packages=["src"],
+    packages=["deepdos"],
     include_package_data=True,
     install_requires=[
         "psutil==5.6.3",
@@ -37,5 +37,5 @@ setup(
         "python_iptables==0.14.0",
         "scikit_learn==0.21.3",
     ],
-    entry_points={"console_scripts": ["deepdos=src.__main__:start_execution"]},
+    entry_points={"console_scripts": ["deepdos=deepdos.__main__:start_execution"]},
 )
