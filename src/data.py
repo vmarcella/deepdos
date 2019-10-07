@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-from conf import LATEST_STABLE_MODEL, ROOT_DIR
+from src.conf import LATEST_STABLE_MODEL, ROOT_DIR
 
 
 def load_dataframe(

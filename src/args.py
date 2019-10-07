@@ -5,7 +5,7 @@ import argparse
 
 import psutil
 
-from conf import LATEST_STABLE_MODEL
+from src.conf import LATEST_STABLE_MODEL
 
 
 def create_parser():

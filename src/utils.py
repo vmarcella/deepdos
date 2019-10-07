@@ -1,6 +1,6 @@
 import subprocess
 
-from conf import ROOT_DIR
+from src.conf import ROOT_DIR
 
 
 def log_ip_flow(from_ip, to_ip, prediction, proba):
@@ -124,7 +124,7 @@ def execute_cicflowmeter():
 
     # Open up the cic flowmeter
     process = subprocess.Popen(
-        cic_cmd, cwd="{ROOT_DIR}/bin/CICFlowMeter-4.0/bin", stdout=subprocess.DEVNULL
+        cic_cmd, cwd=f"{ROOT_DIR}/bin/CICFlowMeter-4.0/bin", stdout=subprocess.DEVNULL
     )
 
     # Wait for the process to be killed
