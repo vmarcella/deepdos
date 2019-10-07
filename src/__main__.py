@@ -20,7 +20,7 @@ class DeepDos:
     def __init__(self, options: dict):
         # Init data
         self.running = True
-        self.model = load_model()
+        self.model = load_model(options["model_type"])
         self.interface = options["interface"]
         self.interface_data = options["interface_data"]
         self.active_firewall = options["firewall"]

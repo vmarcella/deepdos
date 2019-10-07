@@ -59,10 +59,10 @@ def create_parser():
     )
 
     parser.add_argument(
-        "--model-path",
+        "--model-type",
         action="store",
         help="The model that you would like to use for classifying the data",
-        dest="model_path",
+        dest="model_type",
         default=f"{LATEST_STABLE_MODEL}",
     )
 
@@ -118,10 +118,6 @@ def list_interface_data():
     exit()
 
 
-def check_root():
-    return
-
-
 def parse_args():
     """
         Parse the arguments of the arg parser
@@ -140,8 +136,6 @@ def parse_args():
     if args.interface:
         options["interface"] = args.interface
         options["interface_data"] = obtain_interface_data(args.interface)
-        print(options["interface_data"])
-        print(args.interface)
     else:
         print(
             "You need to provide a network interface for deepdos to listen on, or run --find-interface to list all of them."
@@ -155,5 +149,6 @@ def parse_args():
         options["firewall"] = None
 
     options["naughty_count"] = args.naughty_count
+    options["model_type"] = args.model_type
 
     return options
