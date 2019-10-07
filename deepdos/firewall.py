@@ -3,8 +3,10 @@
 """
 import time
 from abc import ABC, abstractmethod
+from sys import platform
 
-import iptc
+if platform == "linux" or platform == "linux2":
+    import iptc
 
 
 class Offender:
