@@ -13,7 +13,7 @@ and tool to create flow csvs from .pcap files. Their site and all resources have
 ### Short term goals
 - [ ] Add LR test metrics on startup
 - [ ] Update LR to use better data for better performance
-- [*] Add command line interface
+- [x] Add command line interface
 
 ### Long term goals
 - [ ] Convert Logistic regression model to a neural network
@@ -31,7 +31,7 @@ git clone https://github.com/C3NZ/deepdos
 source bash/setup.sh
 
 # Execute the script (Needs sudo in order to execute both tcpdump and iptables)
-sudo python3 src -h
+python3 main.py -h
 ```
 This will load you into a virtualenv with all of the dependencies installed and ready to use.
 
@@ -62,27 +62,29 @@ pip3 install deepdos
 ```
 ## Usage
 ```
-usage: src [-h] [-i INTERFACE] [-n NAUGHTY_COUNT] [--find-interface]
-           [--firewall FIREWALL] [--model-type MODEL_TYPE]
+usage: main.py [-h] [-i INTERFACE] [-n NAUGHTY_COUNT] [--find-interface]
+               [--firewall FIREWALL] [--model-type MODEL_TYPE]
 
 Welcome to deepdos, the machine learning/ai based ddos analysis/mitigation
 service
 
 optional arguments:
   -h, --help            show this help message and exit
-  -i INTERFACE          the network interface for deepdos to listen to
-                        (default: None)
-  -n NAUGHTY_COUNT      the amount of malicious flows that can come from a
+  -i INTERFACE          [REQUIRES SUDO] The network interface for deepdos to
+                        listen to (default: None)
+  -n NAUGHTY_COUNT      The amount of malicious flows that can come from a
                         given address (default: 10)
   --find-interface      List all of your devices network interfaces. Good if
                         you don't know what interfaces your device has
                         (default: False)
-  --firewall FIREWALL   Turn on firewall mode for the given system. linux for
-                        Linux systems and macos for mac (Not yet supported)
-                        (default: None)
+  --firewall FIREWALL   [REQUIRES SUDO] Turn on firewall mode for the given
+                        system. linux for Linux systems and macos for mac (Not
+                        yet supported) (default: None)
   --model-type MODEL_TYPE
                         The model that you would like to use for classifying
                         the data (default: lr-stable-0.9.0.pickle)
+usage: src [-h] [-i INTERFACE] [-n NAUGHTY_COUNT] [--find-interface]
+           [--firewall FIREWALL] [--model-type MODEL_TYPE]
 ```
 
 ## How to deploy
