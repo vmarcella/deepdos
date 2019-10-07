@@ -30,6 +30,8 @@ def setup_root_access():
         This is needed so that there is tcpdump and iptable access
     """
     if not os.path.exists(f"{ROOT_DIR}/.haslink") and os.getuid() != 0:
+
+        # Obtain the deepdos bin location post install
         get_deepdos = ["which", "deepdos"]
         process = subprocess.Popen(get_deepdos, stdout=subprocess.PIPE)
         location = process.stdout.readline()
@@ -37,8 +39,10 @@ def setup_root_access():
         exit_status = process.wait()
 
         if exit_status or not location:
-            raise Exception("You didn't properly install deepdos :/")
+            print("You didn't properly install deepdos :/")
+            exit(1)
 
+        # Create link command
         create_link = [
             "sudo",
             "ln",
@@ -46,6 +50,8 @@ def setup_root_access():
             location.decode("utf-8").rstrip(),
             "/usr/bin/deepdos",
         ]
+
+        # Spawn the create_link subprocess
         process = subprocess.Popen(
             create_link,
             stdout=subprocess.PIPE,
@@ -58,18 +64,21 @@ def setup_root_access():
             "For initial setup, deepdos needs your password to create a symlink @ /usr/bin/deepdos\n"
             "to ensure that your sudo user has it! You can enter your password down below."
         )
-        sudo_password = str(getpass.getpass(prompt="Password: "))
-        _, std_err = process.communicate(input=sudo_password.encode())
-        del sudo_password
+        _, std_err = process.communicate(input="")
+        while std_err.decode("utf-8") == f"[sudo] password for {getpass.getuser()}":
+            sudo_password = str(getpass.getpass(prompt=std_err.decode("utf-8")))
+            _, std_err = process.communicate(input=sudo_password)
+
         exit_status = process.wait()
 
         if exit_status:
             # Log the error that had occurred
-            raise Exception(std_err.decode("utf-8"))
+            print(std_err.decode("utf-8").rstrip())
+            exit()
 
         open(f"{ROOT_DIR}/.haslink", "w+").close()
         print("You can now rerun deepdos as root user!")
-        exit()
+        exit(1)
 
 
 def load_conf():
