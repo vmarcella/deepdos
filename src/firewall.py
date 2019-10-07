@@ -1,6 +1,6 @@
-import fcntl
-import socket
-import struct
+"""
+    Firewall abstraction module
+"""
 import time
 from abc import ABC, abstractmethod
 
@@ -15,7 +15,8 @@ class Offender:
     def __init__(self, src, port, protocol, outbound):
         self.src = src
         self.offenses = 1
-        self.port_mappings = set((port, protocol))
+        self.port_mappings = set()
+        self.port_mappings.add((port, protocol))
         self.outbound = outbound
 
     def add_offense(self, port, protocol):
@@ -94,6 +95,7 @@ class Firewall(ABC):
 
             # Which port on are computer are we blocking??
             port = flow.from_port if outbound else flow.to_port
+            print(port)
 
             # Check if the connection occurred
             if flow.connection in self.offenders:

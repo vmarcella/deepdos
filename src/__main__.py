@@ -6,10 +6,10 @@ import os
 import iptc
 
 from args import parse_args
+from conf import ROOT_DIR
 from data import load_model, parse_flow_data
 from firewall import Firewall
-from utils import (capture_pcap, examine_flow_packets, execute_cicflowmeter,
-                   log_ip_flow)
+from utils import capture_pcap, examine_flow_packets, execute_cicflowmeter
 
 
 class DeepDos:
@@ -26,7 +26,7 @@ class DeepDos:
         self.active_firewall = options["firewall"]
 
         # Predicitons file
-        self.flow_file = open("flow_file.txt", "w+")
+        self.flow_file = open(f"{ROOT_DIR}/logs/flow_file.txt", "w+")
 
         # Setup the firewall
         if self.active_firewall:
@@ -47,7 +47,7 @@ class DeepDos:
         """
             Write pcap data
         """
-        pcap_file = open(f"pcap_info/out.pcap", "w", encoding="ISO-8859-1")
+        pcap_file = open(f"{ROOT_DIR}/pcap_info/out.pcap", "w", encoding="ISO-8859-1")
         pcap_list = capture_pcap(self.interface)
 
         # The counter controls the amount of writes that occur.
@@ -102,10 +102,11 @@ class DeepDos:
                 # Write to the flow file and remove the old pcap file
                 self.flow_file.writelines(line + "\n" for line in flow_logs[0])
                 self.flow_file.flush()
-                os.remove("pcap_info/out.pcap")
-            except ValueError as e:
+                os.remove(f"{ROOT_DIR}/pcap_info/out.pcap")
+
+            except ValueError as exception:
                 # Handle flow error
-                if e.args == "too little flow":
+                if exception.args == "too little flow":
                     print(
                         " - Not enough information inside of generated flow, restarting process"
                     )

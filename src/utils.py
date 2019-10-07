@@ -1,5 +1,7 @@
 import subprocess
 
+from conf import ROOT_DIR
+
 
 def log_ip_flow(from_ip, to_ip, prediction, proba):
     """
@@ -57,6 +59,7 @@ def examine_flow_packets(flow_info):
     metadata, predictions, probas = flow_info
     malicious_flows = []
     flow_buffer = []
+    print(metadata)
 
     # Iterate through all of the flow information
     for row, prediction, proba in zip(metadata.values, predictions, probas):
@@ -118,11 +121,11 @@ def execute_cicflowmeter():
     """
     # cic flowmeter command that retrieves all .pcap files from pcap_info and creates
     # a flow output for each .pcap file
-    cic_cmd = ["sh", "cfm", "../../../pcap_info", f"../../../flow_output"]
+    cic_cmd = ["sh", "cfm", f"{ROOT_DIR}/pcap_info", f"{ROOT_DIR}/flow_output"]
 
     # Open up the cic flowmeter
     process = subprocess.Popen(
-        cic_cmd, cwd="bin/CICFlowMeter-4.0/bin", stdout=subprocess.DEVNULL
+        cic_cmd, cwd=f"{ROOT_DIR}/bin/CICFlowMeter-4.0/bin", stdout=subprocess.DEVNULL
     )
 
     # Wait for the process to be killed

@@ -5,6 +5,8 @@ import argparse
 
 import psutil
 
+from conf import LATEST_STABLE_MODEL
+
 
 def create_parser():
     """
@@ -15,7 +17,8 @@ def create_parser():
     """
     # Create the arg parser
     parser = argparse.ArgumentParser(
-        description="Welcome to deepdos, the machine learning/ai based ddos analysis/mitigation service"
+        description="Welcome to deepdos, the machine learning/ai based ddos analysis/mitigation service",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
     # Read in the interface
@@ -51,7 +54,16 @@ def create_parser():
         "--firewall",
         action="store",
         help="Turn on firewall mode for the given system. linux for Linux systems and macos for mac (Not yet supported)",
-        default="",
+        dest="firewall",
+        default=None,
+    )
+
+    parser.add_argument(
+        "--model-path",
+        action="store",
+        help="The model that you would like to use for classifying the data",
+        dest="model_path",
+        default=f"{LATEST_STABLE_MODEL}",
     )
 
     return parser.parse_args()
@@ -115,6 +127,7 @@ def parse_args():
         Parse the arguments of the arg parser
         Return the options that will be used to configure the main loop
     """
+
     args = create_parser()
     options = {}
 

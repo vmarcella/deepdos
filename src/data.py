@@ -1,4 +1,6 @@
-import ipaddress
+"""
+    Handle all data operations within the codebase
+"""
 import pickle
 
 import numpy as np
@@ -7,9 +9,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
+from conf import LATEST_STABLE_MODEL, ROOT_DIR
+
 
 def load_dataframe(
-    csv_location: str = "./ddos_balanced/final_dataset.csv"
+    csv_location: str = "{ROOT_DIR}/ddos_balanced/final_dataset.csv"
 ) -> pd.DataFrame:
     """
         Load up our dataframes that contain 100k of each ddos and benign packets
@@ -18,7 +22,9 @@ def load_dataframe(
             A dataframe that contains 100k samples of both
     """
 
-    if csv_location != "./ddos_balanced/final_dataset.csv":
+    # If we're not reading our large db file, that means we're reading
+    # in a generated flow file.
+    if csv_location != "{ROOT_DIR}/ddos_balanced/final_dataset.csv":
         input_df = pd.read_csv(csv_location)
         return input_df
 
@@ -35,7 +41,9 @@ def load_dataframe(
     return df
 
 
-def load_model(has_model: bool = True) -> LogisticRegression:
+def load_model(
+    has_model: bool = True, model_path: str = f"{LATEST_STABLE_MODEL}"
+) -> LogisticRegression:
     """
         Load or create the logistic regression model.
 
@@ -45,11 +53,11 @@ def load_model(has_model: bool = True) -> LogisticRegression:
     """
     # Load the model from memory or from a beautiful pickle file
     if has_model:
-        lr_file = open("lr.pickle", "rb")
+        lr_file = open(f"{ROOT_DIR}/models/{model_path}", "rb")
         model = pickle.load(lr_file)
         lr_file.close()
     else:
-        lr_file = open("lr.pickle", "wb")
+        lr_file = open(f"{ROOT_DIR}/models/{model_path}", "wb")
         model = create_lr()
         pickle.dump(model, lr_file)
         lr_file.close()
@@ -57,7 +65,7 @@ def load_model(has_model: bool = True) -> LogisticRegression:
     return model
 
 
-def parse_flow_data(path: str = "flow_output/out.pcap_Flow.csv"):
+def parse_flow_data(path: str = f"{ROOT_DIR}/flow_output/out.pcap_Flow.csv"):
     """
         Parse the model data
     """
