@@ -3,12 +3,11 @@
 """
 import os
 
-import iptc
 from deepdos.args import parse_args
 from deepdos.conf import ROOT_DIR, load_conf
 from deepdos.data import load_model, parse_flow_data
-from deepdos.firewall import Firewall
-from deepdos.utils import (capture_pcap, create_firewall, examine_flow_packets,
+from deepdos.firewall import create_firewall
+from deepdos.utils import (capture_pcap, examine_flow_packets,
                            execute_cicflowmeter)
 
 
@@ -30,16 +29,12 @@ class DeepDos:
 
         # Setup the firewall
         if self.active_firewall:
-            try:
-                self.firewall = create_firewall(
-                    self.interface,
-                    self.interface_data,
-                    self.active_firewall,
-                    options["naughty_count"],
-                )
-            except iptc.ip4tc.IPTCError:
-                print("You need to be root in order to execute the program")
-
+            self.firewall = create_firewall(
+                self.interface,
+                self.interface_data,
+                self.active_firewall,
+                options["naughty_count"],
+            )
         else:
             self.firewall = None
 

@@ -88,9 +88,13 @@ def create_firewall(
         """
     # Check the firewall type
     if firewall_type == "linux":
-        from deepdos.iptables import IPtable
+        from deepdos.iptables import IPtable, IPTCError
 
-        return IPtable(interface, interface_data, naughty_count)
+        try:
+            return IPtable(interface, interface_data, naughty_count)
+        except IPTCError:
+            print("Need to be root in order to access firewall")
+            return None
 
     # Invalid firewall
     raise ValueError(

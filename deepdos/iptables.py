@@ -1,6 +1,8 @@
 import iptc
 from deepdos.firewall import Firewall
 
+IPTCError = iptc.ip4tc.IPTCError
+
 
 class IPtable(Firewall):
     """
