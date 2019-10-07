@@ -1,3 +1,6 @@
+"""
+    Setup.py for deploying this distribution
+"""
 import pathlib
 
 from setuptools import setup
