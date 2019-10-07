@@ -8,6 +8,9 @@ pcap_info
 # virtualenv folder
 venv
 
+# ignore log files
+logs
+
 # logs for CICflowmeter
 bin/CICFlowMeter-4.0/bin/logs
 

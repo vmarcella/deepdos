@@ -27,19 +27,15 @@ deepdos is currently only available on linux, but can simply be run by these two
 # clone repo
 git clone https://github.com/C3NZ/deepdos
 
-# install dependencies and allow pcap information to be captured without root.
+# Install dependencies and setup the projects virtual environment
 source bash/setup.sh
 
-# Install requirements
-pip3 install -r requirements.txt
-
-# Execute the script (Needs sudo in order to execute tcpdump and access iptables)
-sudo python3 utils.py
+# Execute the script (Needs sudo in order to execute both tcpdump and iptables)
+sudo python3 src -h
 ```
 This will load you into a virtualenv with all of the dependencies installed and ready to use.
 
 To remove all of the dependencies after you're done using the tool, you can simply run:
-
 ```bash
 source bash/remove.sh
 ```
@@ -51,6 +47,31 @@ the traffic that is being exchanged in and out of your current computer.
 
 This also assumes that you have java installed for the program to execute the CICFlowMeter jar
 file.
+
+## Usage
+```
+usage: src [-h] [-i INTERFACE] [-n NAUGHTY_COUNT] [--find-interface]
+           [--firewall FIREWALL] [--model-type MODEL_TYPE]
+
+Welcome to deepdos, the machine learning/ai based ddos analysis/mitigation
+service
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INTERFACE          the network interface for deepdos to listen to
+                        (default: None)
+  -n NAUGHTY_COUNT      the amount of malicious flows that can come from a
+                        given address (default: 10)
+  --find-interface      List all of your devices network interfaces. Good if
+                        you don't know what interfaces your device has
+                        (default: False)
+  --firewall FIREWALL   Turn on firewall mode for the given system. linux for
+                        Linux systems and macos for mac (Not yet supported)
+                        (default: None)
+  --model-type MODEL_TYPE
+                        The model that you would like to use for classifying
+                        the data (default: lr-stable-0.9.0.pickle)
+```
 
 ## How to deploy
 You can deploy this on your own machine, but production use will come in the future.
