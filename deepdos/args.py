@@ -4,7 +4,6 @@
 import argparse
 
 import psutil
-
 from deepdos.conf import LATEST_STABLE_MODEL
 
 
@@ -123,13 +122,13 @@ def parse_args():
         Parse the arguments of the arg parser
         Return the options that will be used to configure the main loop
     """
-
     args = create_parser()
     options = {}
 
     # Find all interfaces if specified and then exit
     if args.find_interface:
         # List all of the interface data
+        print(args)
         list_interface_data()
 
     # Store the interface and interface data

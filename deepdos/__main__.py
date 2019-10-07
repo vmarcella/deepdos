@@ -4,9 +4,8 @@
 import os
 
 import iptc
-
 from deepdos.args import parse_args
-from deepdos.conf import ROOT_DIR
+from deepdos.conf import ROOT_DIR, load_conf
 from deepdos.data import load_model, parse_flow_data
 from deepdos.firewall import Firewall
 from deepdos.utils import (capture_pcap, examine_flow_packets,
@@ -118,9 +117,11 @@ def start_execution():
     """
         Parse arguments and run our deepdos application
     """
+    load_conf()
     options = parse_args()
     DeepDos(options).main_loop()
 
 
 if __name__ == "__main__":
+
     start_execution()
