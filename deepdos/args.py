@@ -25,7 +25,7 @@ def create_parser():
         "-i",
         action="store",
         dest="interface",
-        help="the network interface for deepdos to listen to",
+        help="[REQUIRES SUDO] The network interface for deepdos to listen to",
         default=None,
     )
 
@@ -35,7 +35,7 @@ def create_parser():
         action="store",
         dest="naughty_count",
         type=int,
-        help="the amount of malicious flows that can come from a given address",
+        help="The amount of malicious flows that can come from a given address",
         default=10,
     )
 
@@ -52,7 +52,7 @@ def create_parser():
     parser.add_argument(
         "--firewall",
         action="store",
-        help="Turn on firewall mode for the given system. linux for Linux systems and macos for mac (Not yet supported)",
+        help="[REQUIRES SUDO] Turn on firewall mode for the given system. linux for Linux systems and macos for mac (Not yet supported)",
         dest="firewall",
         default=None,
     )
