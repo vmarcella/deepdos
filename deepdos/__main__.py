@@ -8,7 +8,7 @@ from deepdos.args import parse_args
 from deepdos.conf import ROOT_DIR, load_conf
 from deepdos.data import load_model, parse_flow_data
 from deepdos.firewall import Firewall
-from deepdos.utils import (capture_pcap, examine_flow_packets,
+from deepdos.utils import (capture_pcap, create_firewall, examine_flow_packets,
                            execute_cicflowmeter)
 
 
@@ -31,7 +31,7 @@ class DeepDos:
         # Setup the firewall
         if self.active_firewall:
             try:
-                self.firewall = Firewall.create_firewall(
+                self.firewall = create_firewall(
                     self.interface,
                     self.interface_data,
                     self.active_firewall,
