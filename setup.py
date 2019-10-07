@@ -25,6 +25,7 @@ setup(
         "Operating System :: MacOS",
         "Development Status :: 2 - Pre-Alpha",
     ],
+    packages=["src"],
     include_package_data=True,
     install_requires=[
         "psutil==5.6.3",
