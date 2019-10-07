@@ -59,7 +59,6 @@ def examine_flow_packets(flow_info):
     metadata, predictions, probas = flow_info
     malicious_flows = []
     flow_buffer = []
-    print(metadata)
 
     # Iterate through all of the flow information
     for row, prediction, proba in zip(metadata.values, predictions, probas):
@@ -125,7 +124,7 @@ def execute_cicflowmeter():
 
     # Open up the cic flowmeter
     process = subprocess.Popen(
-        cic_cmd, cwd=f"{ROOT_DIR}/bin/CICFlowMeter-4.0/bin", stdout=subprocess.DEVNULL
+        cic_cmd, cwd="{ROOT_DIR}/bin/CICFlowMeter-4.0/bin", stdout=subprocess.DEVNULL
     )
 
     # Wait for the process to be killed

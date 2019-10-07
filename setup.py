@@ -32,7 +32,7 @@ setup(
         "pandas==0.25.1",
         "numpy==1.17.2",
         "python_iptables==0.14.0",
-        "sckit_learn==0.21.3",
+        "scikit_learn==0.21.3",
     ],
     entry_points={"console_scripts": ["deepdos=src.main:start_execution"]},
 )
