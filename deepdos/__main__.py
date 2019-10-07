@@ -5,11 +5,12 @@ import os
 
 import iptc
 
-from src.args import parse_args
-from src.conf import ROOT_DIR
-from src.data import load_model, parse_flow_data
-from src.firewall import Firewall
-from src.utils import capture_pcap, examine_flow_packets, execute_cicflowmeter
+from deepdos.args import parse_args
+from deepdos.conf import ROOT_DIR
+from deepdos.data import load_model, parse_flow_data
+from deepdos.firewall import Firewall
+from deepdos.utils import (capture_pcap, examine_flow_packets,
+                           execute_cicflowmeter)
 
 
 class DeepDos:

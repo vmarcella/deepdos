@@ -1,6 +1,9 @@
+"""
+    Utility module mainly for executing terminal commands
+"""
 import subprocess
 
-from src.conf import ROOT_DIR
+from deepdos.conf import ROOT_DIR
 
 
 def log_ip_flow(from_ip, to_ip, prediction, proba):
@@ -124,7 +127,9 @@ def execute_cicflowmeter():
 
     # Open up the cic flowmeter
     process = subprocess.Popen(
-        cic_cmd, cwd=f"{ROOT_DIR}/bin/CICFlowMeter-4.0/bin", stdout=subprocess.DEVNULL
+        cic_cmd,
+        cwd=f"{ROOT_DIR}/external/CICFlowMeter-4.0/bin",
+        stdout=subprocess.DEVNULL,
     )
 
     # Wait for the process to be killed
