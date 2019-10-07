@@ -65,7 +65,7 @@ def create_parser():
         default=f"{LATEST_STABLE_MODEL}",
     )
 
-    return parser.parse_args()
+    return parser
 
 
 def obtain_interface_data(desired_interface):
@@ -122,7 +122,8 @@ def parse_args():
         Parse the arguments of the arg parser
         Return the options that will be used to configure the main loop
     """
-    args = create_parser()
+    parser = create_parser()
+    args = parser.parse_args()
     options = {}
 
     # Find all interfaces if specified and then exit
@@ -136,9 +137,7 @@ def parse_args():
         options["interface"] = args.interface
         options["interface_data"] = obtain_interface_data(args.interface)
     else:
-        print(
-            "You need to provide a network interface for deepdos to listen on, or run --find-interface to list all of them."
-        )
+        parser.print_usage()
         exit()
 
     # Check if firewall is set and set to a valid system

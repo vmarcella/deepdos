@@ -11,6 +11,9 @@ venv
 # ignore log files
 logs
 
+# Ignore haslink file for initial setup.
+.haslink
+
 # logs for CICflowmeter
 bin/CICFlowMeter-4.0/bin/logs
 

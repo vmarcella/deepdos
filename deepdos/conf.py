@@ -29,7 +29,7 @@ def setup_root_access():
         Setup root access for the deepdos command line utility.
         This is needed so that there is tcpdump and iptable access
     """
-    if not os.path.exists("{ROOT_DIR}/.haslink"):
+    if not os.path.exists(f"{ROOT_DIR}/.haslink") and os.getuid() != 0:
         get_deepdos = ["which", "deepdos"]
         process = subprocess.Popen(get_deepdos, stdout=subprocess.PIPE)
         location = process.stdout.readline()
@@ -54,7 +54,9 @@ def setup_root_access():
         )
 
         print(
-            "Attempting to symlink deepdos so root has has access, enter your password below."
+            "Hi, I see it's your first time running deepdos!\n"
+            "For initial setup, deepdos needs your password to create a symlink @ /usr/bin/deepdos\n"
+            "to ensure that your sudo user has it! You can enter your password down below."
         )
         sudo_password = str(getpass.getpass(prompt="Password: "))
         _, std_err = process.communicate(input=sudo_password.encode())
@@ -65,7 +67,9 @@ def setup_root_access():
             # Log the error that had occurred
             raise Exception(std_err.decode("utf-8"))
 
-        open(f"{ROOT_DIR}/.haslink", "w").close()
+        open(f"{ROOT_DIR}/.haslink", "w+").close()
+        print("You can now rerun deepdos as root user!")
+        exit()
 
 
 def load_conf():
