@@ -9,6 +9,10 @@ import sys
 # Get the root directory for deepdos
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Directory for dependencies, models, logs and anything else
+# that isn't code related
+ETC_DIR = f"{ROOT_DIR}/.etc"
+
 # Latest stable model
 LATEST_STABLE_MODEL = "lr-stable-0.9.0.pickle"
 
@@ -19,10 +23,10 @@ def create_etc_dirs():
         to function properly
     """
     # Load in the folders that don't exist
-    if not os.path.exists(f"{ROOT_DIR}/logs"):
+    if not os.path.exists(f"{ETC_DIR}/logs"):
         folders = ["logs", "pcap_info", "flow_output"]
         for folder in folders:
-            os.mkdir(f"{ROOT_DIR}/{folder}")
+            os.mkdir(f"{ROOT_DIR}/.etc/{folder}")
 
 
 def setup_root_access():
@@ -30,7 +34,7 @@ def setup_root_access():
         Setup root access for the deepdos command line utility.
         This is needed so that there is tcpdump and iptable access
     """
-    if not os.path.exists(f"{ROOT_DIR}/.haslink") and os.geteuid() != 0:
+    if not os.path.exists(f"{ETC_DIR}/.haslink") and os.geteuid() != 0:
 
         # Obtain the deepdos bin location post install
         get_deepdos = ["which", "deepdos"]
@@ -92,7 +96,7 @@ def setup_root_access():
                 print(std_err.decode("utf-8").rstrip())
                 exit(1)
 
-            open(f"{ROOT_DIR}/.haslink", "w+").close()
+            open(f"{ETC_DIR}/.haslink", "w+").close()
             print("You can now rerun deepdos as root user!")
             exit()
 

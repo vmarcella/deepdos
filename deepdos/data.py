@@ -5,11 +5,10 @@ import pickle
 
 import numpy as np
 import pandas as pd
+from deepdos.conf import ETC_DIR, LATEST_STABLE_MODEL, ROOT_DIR
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-
-from deepdos.conf import LATEST_STABLE_MODEL, ROOT_DIR
 
 
 def load_dataframe(
@@ -53,11 +52,11 @@ def load_model(
     """
     # Load the model from memory or from a beautiful pickle file
     if has_model:
-        lr_file = open(f"{ROOT_DIR}/models/{model_path}", "rb")
+        lr_file = open(f"{ETC_DIR}/models/{model_path}", "rb")
         model = pickle.load(lr_file)
         lr_file.close()
     else:
-        lr_file = open(f"{ROOT_DIR}/models/{model_path}", "wb")
+        lr_file = open(f"{ETC_DIR}/models/{model_path}", "wb")
         model = create_lr()
         pickle.dump(model, lr_file)
         lr_file.close()
@@ -65,7 +64,7 @@ def load_model(
     return model
 
 
-def parse_flow_data(path: str = f"{ROOT_DIR}/flow_output/out.pcap_Flow.csv"):
+def parse_flow_data(path: str = f"{ETC_DIR}/flow_output/out.pcap_Flow.csv"):
     """
         Parse the model data
     """

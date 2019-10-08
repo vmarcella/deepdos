@@ -1,6 +1,10 @@
+"""
+    Module for spawning subprocesses within deepdos to carry out operations 
+    that this application isn't capable of doing.
+"""
 import subprocess
 
-from deepdos.conf import ROOT_DIR
+from deepdos.conf import ETC_DIR, ROOT_DIR
 
 
 def proc_capture_pcap(interface, line_count=1000):
@@ -47,12 +51,12 @@ def proc_execute_cicflowmeter():
     """
     # cic flowmeter command that retrieves all .pcap files from pcap_info and creates
     # a flow output for each .pcap file
-    cic_cmd = ["sh", "cfm", f"{ROOT_DIR}/pcap_info", f"{ROOT_DIR}/flow_output"]
+    cic_cmd = ["sh", "cfm", f"{ETC_DIR}/pcap_info", f"{ETC_DIR}/flow_output"]
 
     # Open up the cic flowmeter
     process = subprocess.Popen(
         cic_cmd,
-        cwd=f"{ROOT_DIR}/external/CICFlowMeter-4.0/bin",
+        cwd=f"{ETC_DIR}/external/CICFlowMeter-4.0/bin",
         stdout=subprocess.DEVNULL,
     )
 

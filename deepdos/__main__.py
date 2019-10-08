@@ -4,7 +4,7 @@
 import os
 
 from deepdos.args import parse_args
-from deepdos.conf import ROOT_DIR, load_conf
+from deepdos.conf import ETC_DIR, ROOT_DIR, load_conf
 from deepdos.data import load_model, parse_flow_data
 from deepdos.utils.network import create_firewall, examine_flow_packets
 from deepdos.utils.processes import (proc_capture_pcap,
@@ -25,7 +25,7 @@ class DeepDos:
         self.active_firewall = options["firewall"]
 
         # Predicitons file
-        self.flow_file = open(f"{ROOT_DIR}/logs/flow_file.txt", "w+")
+        self.flow_file = open(f"{ETC_DIR}/logs/flow_file.txt", "w+")
 
         # Setup the firewall
         if self.active_firewall:
@@ -42,7 +42,7 @@ class DeepDos:
         """
             Write pcap data
         """
-        pcap_file = open(f"{ROOT_DIR}/pcap_info/out.pcap", "w", encoding="ISO-8859-1")
+        pcap_file = open(f"{ETC_DIR}/pcap_info/out.pcap", "w", encoding="ISO-8859-1")
         pcap_list = proc_capture_pcap(self.interface)
 
         # The counter controls the amount of writes that occur.
@@ -98,7 +98,7 @@ class DeepDos:
                 # Write to the flow file and remove the old pcap file
                 self.flow_file.writelines(line + "\n" for line in flow_logs[0])
                 self.flow_file.flush()
-                os.remove(f"{ROOT_DIR}/pcap_info/out.pcap")
+                os.remove(f"{ETC_DIR}/pcap_info/out.pcap")
 
             except ValueError as exception:
                 # Handle flow error
