@@ -1,5 +1,10 @@
+"""
+    Module for linux based firewalls
+"""
+import time
+
 import iptc
-from deepdos.firewall import Firewall
+from deepdos.firewall.firewall import Firewall
 
 IPTCError = iptc.ip4tc.IPTCError
 

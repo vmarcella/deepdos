@@ -4,6 +4,7 @@
 import getpass
 import os
 import subprocess
+import sys
 
 # Get the root directory for deepdos
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -29,7 +30,7 @@ def setup_root_access():
         Setup root access for the deepdos command line utility.
         This is needed so that there is tcpdump and iptable access
     """
-    if not os.path.exists(f"{ROOT_DIR}/.haslink") and os.getuid() != 0:
+    if not os.path.exists(f"{ROOT_DIR}/.haslink") and os.geteuid() != 0:
 
         # Obtain the deepdos bin location post install
         get_deepdos = ["which", "deepdos"]
@@ -42,43 +43,63 @@ def setup_root_access():
             print("You didn't properly install deepdos :/")
             exit(1)
 
-        # Create link command
-        create_link = [
-            "sudo",
-            "ln",
-            "-s",
-            location.decode("utf-8").rstrip(),
-            "/usr/bin/deepdos",
-        ]
+        if sys.platform == "linux":
+            user_input = input(
+                "deepdos can setup a symlink inside of /usr/bin/deepdos for you if you'd\n"
+                "like to be able to easily access deepdos via sudo. If you can already access\n"
+                "deepdos with sudo, then you can just say exit or press N.\n"
+                "Would you like deepdos to try and create a symlink? [y/N]"
+            )
 
-        # Spawn the create_link subprocess
-        process = subprocess.Popen(
-            create_link,
-            stdout=subprocess.PIPE,
-            stdin=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
+            if user_input != "y":
+                print("Shutting down. Cannot access network utilities without sudo.")
+                exit()
 
-        print(
-            "Hi, I see it's your first time running deepdos!\n"
-            "For initial setup, deepdos needs your password to create a symlink @ /usr/bin/deepdos\n"
-            "to ensure that your sudo user has it! You can enter your password down below."
-        )
-        _, std_err = process.communicate(input="")
-        while std_err.decode("utf-8") == f"[sudo] password for {getpass.getuser()}":
-            sudo_password = str(getpass.getpass(prompt=std_err.decode("utf-8")))
-            _, std_err = process.communicate(input=sudo_password)
+            # Create link command
+            create_link = [
+                "sudo",
+                "ln",
+                "-s",
+                location.decode("utf-8").rstrip(),
+                "/usr/bin/deepdos",
+            ]
 
-        exit_status = process.wait()
+            # Spawn the create_link subprocess
+            process = subprocess.Popen(
+                create_link,
+                stdout=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
 
-        if exit_status:
-            # Log the error that had occurred
-            print(std_err.decode("utf-8").rstrip())
+            print(
+                "For initial setup, deepdos needs your password to create a symlink @ /usr/bin/deepdos\n"
+                "to ensure that your sudo user has it! You can enter your password down below if prompted."
+            )
+
+            # Get the first
+            _, std_err = process.communicate(input="")
+
+            # Obtain the sudo password from the user
+            while std_err.decode("utf-8") == f"[sudo] password for {getpass.getuser()}":
+                sudo_password = str(getpass.getpass(prompt=std_err.decode("utf-8")))
+                _, std_err = process.communicate(input=sudo_password)
+
+            exit_status = process.wait()
+
+            # Couldn't authenticate successfully
+            if exit_status:
+                print(std_err.decode("utf-8").rstrip())
+                exit(1)
+
+            open(f"{ROOT_DIR}/.haslink", "w+").close()
+            print("You can now rerun deepdos as root user!")
             exit()
 
-        open(f"{ROOT_DIR}/.haslink", "w+").close()
-        print("You can now rerun deepdos as root user!")
-        exit(1)
+        else:
+            # User is signed into non-linux
+            print("You need to be root in order to run these commands!")
+            exit(1)
 
 
 def load_conf():

@@ -6,8 +6,9 @@ import os
 from deepdos.args import parse_args
 from deepdos.conf import ROOT_DIR, load_conf
 from deepdos.data import load_model, parse_flow_data
-from deepdos.utils import (capture_pcap, create_firewall, examine_flow_packets,
-                           execute_cicflowmeter)
+from deepdos.utils.network import create_firewall, examine_flow_packets
+from deepdos.utils.processes import (proc_capture_pcap,
+                                     proc_execute_cicflowmeter)
 
 
 class DeepDos:
@@ -42,15 +43,16 @@ class DeepDos:
             Write pcap data
         """
         pcap_file = open(f"{ROOT_DIR}/pcap_info/out.pcap", "w", encoding="ISO-8859-1")
-        pcap_list = capture_pcap(self.interface)
+        pcap_list = proc_capture_pcap(self.interface)
 
         # The counter controls the amount of writes that occur.
         print(f" - Writing packets to out.pcap file")
         pcap_file.writelines(pcap_list)
         pcap_file.close()
 
+        # Execute cicflowmeter
         print(" - Writing to csv")
-        execute_cicflowmeter()
+        proc_execute_cicflowmeter()
 
     def evaluate_network_data(self):
         """
@@ -111,8 +113,11 @@ def start_execution():
     """
         Parse arguments and run our deepdos application
     """
-    load_conf()
+    # Parse all options for deepdos
     options = parse_args()
+    # Load config file
+    load_conf()
+    # Execute deepdos mainloop
     DeepDos(options).main_loop()
 
 
