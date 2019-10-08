@@ -4,7 +4,7 @@
 import os
 
 from deepdos.args import parse_args
-from deepdos.conf import ETC_DIR, ROOT_DIR, load_conf
+from deepdos.conf import ETC_DIR, load_conf
 from deepdos.data import load_model, parse_flow_data
 from deepdos.utils.network import create_firewall, examine_flow_packets
 from deepdos.utils.processes import (proc_capture_pcap,
