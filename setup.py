@@ -12,7 +12,7 @@ README = (DIR / "README.md").read_text()
 
 setup(
     name="deepdos",
-    version="0.9.93",
+    version="0.9.94",
     description="A machine learning/AI based approach to protecting your devices against ddos attacks",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -30,6 +30,7 @@ setup(
     ],
     packages=["deepdos"],
     include_package_data=True,
+    setup_requires=["wheel"],
     install_requires=[
         "psutil==5.6.3",
         "pandas==0.25.1",

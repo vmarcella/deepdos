@@ -1,9 +1,7 @@
 """
     Firewall abstraction module
 """
-import time
 from abc import ABC, abstractmethod
-from sys import platform
 
 
 class Offender:
@@ -97,22 +95,3 @@ class Firewall(ABC):
                 self.offenders[flow.connection] = Offender(
                     flow.connection, port, flow.protocol, outbound
                 )
-
-
-def create_firewall(
-    interface: str, interface_data: dict, firewall_type: str, naughty_count: int
-):
-    """
-            Firewall factory. Will create a firewall based on the type of firewall that is passed in.
-            Currently, this function only supports linux based operating systems
-    """
-    # Check the firewall type
-    if firewall_type == "linux":
-        from deepdos.iptables import IPtable
-
-        return IPtable(interface, interface_data, naughty_count)
-
-    # Invalid firewall
-    raise ValueError(
-        "linux is the only supported operating system for firewall mode. You entered: {firewall_type}"
-    )

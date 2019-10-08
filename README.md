@@ -51,7 +51,7 @@ file.
 ### Installing with pip
 #### Linux
 ```bash
-sudo apt install libpcap-dev
+sudo apt install libpcap-dev python3-dev python3-setuptools
 pip3 install deepdos
 ```
 

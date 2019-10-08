@@ -6,8 +6,7 @@ import os
 from deepdos.args import parse_args
 from deepdos.conf import ROOT_DIR, load_conf
 from deepdos.data import load_model, parse_flow_data
-from deepdos.firewall import create_firewall
-from deepdos.utils import (capture_pcap, examine_flow_packets,
+from deepdos.utils import (capture_pcap, create_firewall, examine_flow_packets,
                            execute_cicflowmeter)
 
 
