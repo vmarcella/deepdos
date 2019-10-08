@@ -53,12 +53,18 @@ file.
 ```bash
 sudo apt install libpcap-dev python3-dev python3-setuptools
 pip3 install deepdos
+
+python3 -m deepdos -h
+# or deepdos -h, depending on how your path is configured.
 ```
 
 #### Macos
 ```bash
 brew install libpcap
 pip3 install deepdos
+
+python3 -m deepdos -h
+# or deepdos -h, depending on how your path is configured.
 ```
 ## Usage
 ```

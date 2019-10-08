@@ -12,7 +12,7 @@ README = (DIR / "README.md").read_text()
 
 setup(
     name="deepdos",
-    version="0.9.94",
+    version="0.9.95",
     description="A machine learning/AI based approach to protecting your devices against ddos attacks",
     long_description=README,
     long_description_content_type="text/markdown",
@@ -37,6 +37,7 @@ setup(
         "numpy==1.17.2",
         "python_iptables==0.14.0",
         "scikit_learn==0.21.3",
+        "wheel==0.32.3",
     ],
     entry_points={"console_scripts": ["deepdos=deepdos.__main__:start_execution"]},
 )
