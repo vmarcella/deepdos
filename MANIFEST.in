@@ -1,2 +1,1 @@
-graft deepdos/external
-graft deepdos/models
+graft deepdos/.etc
