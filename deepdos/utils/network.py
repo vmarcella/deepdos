@@ -1,6 +1,7 @@
 """
     Utility module mainly for executing terminal commands
 """
+from deepdos.utils.flow import MaliciousFlow
 
 
 def log_ip_flow(from_ip, to_ip, prediction, proba):
@@ -37,21 +38,6 @@ def log_ip_flow(from_ip, to_ip, prediction, proba):
     return ("---IP BLOCK---", src, dst, pred, prob, safe, mal, "--------")
 
 
-class MaliciousFlow:
-    """
-        Tracking malicious flows more efficiently with class containers
-    """
-
-    def __init__(self, ips, ports, protocol):
-        self.from_ip, self.to_ip = ips
-        self.from_port, self.to_port = ports
-        self.protocol = protocol
-        self.connection = f"{self.from_ip}/{self.to_ip}"
-
-    def __repr__(self):
-        return f"{self.from_ip}/{self.to_ip}-{self.from_port}:{self.to_port}-{self.protocol}"
-
-
 def examine_flow_packets(flow_info):
     """
         Examine and log all flow activity. Will return all malicious packets
@@ -80,9 +66,9 @@ def create_firewall(
     interface: str, interface_data: dict, firewall_type: str, naughty_count: int
 ):
     """
-            Firewall factory. Will create a firewall based on the type of firewall that is passed in.
-            Currently, this function only supports linux based operating systems
-        """
+        Firewall factory. Will create a firewall based on the type of firewall that is passed in.
+        Currently, this function only supports linux based operating systems
+    """
     # Check the firewall type
     if firewall_type == "linux":
         from deepdos.firewall.iptables import IPtable, IPTCError
@@ -92,5 +78,5 @@ def create_firewall(
         except IPTCError:
             print("Need to be root in order to access firewall")
             return None
-
-    # Invalid firewall
+    else:
+        return None

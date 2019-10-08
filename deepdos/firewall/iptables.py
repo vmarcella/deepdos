@@ -29,7 +29,6 @@ class IPtable(Firewall):
         """
         print("- Creating rule for an offender")
         print(offender)
-        return
 
         # Unpack some variables
         interface_info = self.interface_data[self.ip_version]
