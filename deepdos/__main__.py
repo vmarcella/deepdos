@@ -52,7 +52,7 @@ class DeepDos:
 
         # Execute cicflowmeter
         print(" - Writing to csv")
-        proc_execute_cicflowmeter()
+        proc_execute_cicflowmeter(ETC_DIR)
 
     def evaluate_network_data(self):
         """
