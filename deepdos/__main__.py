@@ -1,6 +1,7 @@
 """
     The main functionality of deepdos
 """
+import logging
 import os
 
 from deepdos.args import parse_args
@@ -115,6 +116,10 @@ def start_execution():
     """
     # Parse all options for deepdos
     options = parse_args()
+    # Instantiate logging
+
+    logging.basicConfig(level=options["LOG"])
+
     # Load config file
     load_conf()
     # Execute deepdos mainloop

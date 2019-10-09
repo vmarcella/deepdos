@@ -3,7 +3,7 @@
 """
 import pathlib
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 DIR = pathlib.Path(__file__).parent
 
@@ -28,7 +28,7 @@ setup(
         "Operating System :: MacOS",
         "Development Status :: 2 - Pre-Alpha",
     ],
-    packages=["deepdos"],
+    packages=find_packages(),
     include_package_data=True,
     setup_requires=["wheel"],
     install_requires=[

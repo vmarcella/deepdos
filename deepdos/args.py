@@ -65,6 +65,14 @@ def create_parser():
         default=f"{LATEST_STABLE_MODEL}",
     )
 
+    parser.add_argument(
+        "--log",
+        action="store",
+        help="Set the log level. Can choose from: [DEBUG, INFO, WARNING, ERROR, CRITICAL]",
+        dest="log",
+        default="INFO",
+    )
+
     return parser
 
 

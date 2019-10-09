@@ -98,6 +98,10 @@ def proc_create_linux_symlink(src_location: str):
 
         Args:
             src_location: the location where deepdos is installed as a string
+
+        Returns:
+            Nothing, but will stop the program execution if it couldn't succeed. This is
+            because you NEED root privileges in order to utilize network toolings.
     """
     user_input = input(
         "deepdos can setup a symlink inside of /usr/bin/deepdos for you if you'd\n"
