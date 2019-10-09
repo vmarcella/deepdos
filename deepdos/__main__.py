@@ -118,7 +118,7 @@ def start_execution():
     options = parse_args()
     # Instantiate logging
 
-    logging.basicConfig(level=options["LOG"])
+    logging.basicConfig(level=options["log"])
 
     # Load config file
     load_conf()
