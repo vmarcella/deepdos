@@ -5,7 +5,7 @@ import pickle
 
 import numpy as np
 import pandas as pd
-from deepdos.conf import ETC_DIR, LATEST_STABLE_MODEL, ROOT_DIR
+from deepdos.conf import ETC_DIR, LATEST_STABLE_MODEL
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
@@ -36,8 +36,8 @@ def load_dataframe(
     benign_df = pd.read_csv(csv_location, nrows=100000, index_col=0, skiprows=6500000)
     benign_df.columns = features
 
-    df = pd.concat([ddos_df, benign_df])
-    return df
+    dataframe = pd.concat([ddos_df, benign_df])
+    return dataframe
 
 
 def load_model(
@@ -70,19 +70,19 @@ def parse_flow_data(path: str = f"{ETC_DIR}/flow_output/out.pcap_Flow.csv"):
     """
     # Load the df from memory
     print(" - Converting csv into dataframe")
-    df = load_dataframe(path)
+    dataframe = load_dataframe(path)
 
     # Split up the dataframe
-    from_ip = df["Src IP"]
-    to_ip = df["Dst IP"]
-    protocol = df["Protocol"]
-    from_port = df["Src Port"]
-    to_port = df["Dst Port"]
+    from_ip = dataframe["Src IP"]
+    to_ip = dataframe["Dst IP"]
+    protocol = dataframe["Protocol"]
+    from_port = dataframe["Src Port"]
+    to_port = dataframe["Dst Port"]
 
     # Clean up the dataframe and create training testing data
     print(" - Cleaning dataframe and obtaining data")
-    preprocess_df(df)
-    x_train, x_test, _, _ = get_train_test(df)
+    preprocess_df(dataframe)
+    x_train, x_test, _, _ = get_train_test(dataframe)
     data = np.concatenate((x_test, x_train))
 
     # Create metadata dataframe for use in the main loop
@@ -96,7 +96,7 @@ def parse_flow_data(path: str = f"{ETC_DIR}/flow_output/out.pcap_Flow.csv"):
     return {"data": data, "metadata": metadata}
 
 
-def preprocess_df(df: pd.DataFrame) -> None:
+def preprocess_df(dataframe: pd.DataFrame) -> None:
     """
         Preprocess the dataframe for erraneous/irrelevant columns (In place)
 
@@ -106,19 +106,19 @@ def preprocess_df(df: pd.DataFrame) -> None:
         Returns:
             Nothing
     """
-    df.drop(
+    dataframe.drop(
         ["Flow ID", "Timestamp", "Src IP", "Dst IP", "Flow Byts/s", "Flow Pkts/s"],
         inplace=True,
         axis=1,
     )
 
-    df["Label"] = df["Label"].apply(lambda x: 1 if x == "ddos" else 0)
+    dataframe["Label"] = dataframe["Label"].apply(lambda x: 1 if x == "ddos" else 0)
 
-    for row in df.columns:
-        df[row] = np.nan_to_num(df[row])
+    for col in dataframe.columns:
+        dataframe[col] = np.nan_to_num(dataframe[col])
 
 
-def get_train_test(df: pd.DataFrame) -> tuple:
+def get_train_test(dataframe: pd.DataFrame) -> tuple:
     """
         Obtain the training and testing data.
 
@@ -131,37 +131,31 @@ def get_train_test(df: pd.DataFrame) -> tuple:
     y_data = []
 
     # Separate features from the target
-    for row in df.values:
+    for row in dataframe.values:
         x_data.append(row[:-1])
         y_data.append(row[-1])
 
-    X_train, X_test, Y_train, Y_test = train_test_split(x_data, y_data, random_state=1)
-    return np.array(X_train), np.array(X_test), np.array(Y_train), np.array(Y_test)
+    x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, random_state=1)
+    return np.array(x_train), np.array(x_test), np.array(y_train), np.array(y_test)
 
 
-def compute_logistic_model(X_train, X_test, Y_train, Y_test) -> LogisticRegression:
+def compute_logistic_model(x_train, x_test, y_train, y_test) -> LogisticRegression:
     """
         Create our logistic regression model
     """
     # Obtain a logistic regression
-    lr = LogisticRegression()
-    lr.fit(X_train, Y_train)
-    print(f"Sklearn accuracy: {accuracy_score(lr.predict(X_test), Y_test)}")
-    return lr
+    log_reg = LogisticRegression()
+    log_reg.fit(x_train, y_train)
+    print(f"Sklearn accuracy: {accuracy_score(log_reg.predict(x_test), y_test)}")
+    return log_reg
 
 
 def create_lr() -> LogisticRegression:
     """
         Create a logistic regression given our base dataframe
     """
-    df: pd.DataFrame = load_dataframe()
-    preprocess_df(df)
-    X_train, X_test, Y_train, Y_test = get_train_test(df)
+    dataframe: pd.DataFrame = load_dataframe()
+    preprocess_df(dataframe)
+    x_train, x_test, y_train, y_test = get_train_test(dataframe)
 
-    return compute_logistic_model(X_train, X_test, Y_train, Y_test)
-
-
-if __name__ == "__main__":
-    df: pd.DataFrame = load_dataframe()
-    preprocess_df(df)
-    X_train, X_test, Y_train, Y_test = get_train_test(df)
+    return compute_logistic_model(x_train, x_test, y_train, y_test)
