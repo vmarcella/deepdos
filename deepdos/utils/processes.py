@@ -6,7 +6,7 @@ import getpass
 import subprocess
 
 
-def proc_capture_pcap(interface, line_count=1000):
+def proc_capture_pcap(interface, line_count=5000):
     """
         Capturing pcap information
     """

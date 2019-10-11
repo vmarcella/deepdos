@@ -103,7 +103,7 @@ class DeepDos:
 
             except ValueError as exception:
                 # Handle flow error
-                if exception.args == "too little flow":
+                if exception.args[0] == "too little flow":
                     print(
                         " - Not enough information inside of generated flow, restarting process"
                     )
