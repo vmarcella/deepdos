@@ -5,11 +5,13 @@ import pathlib
 
 from setuptools import find_packages, setup
 
+# Get the directory that this file is in
 DIR = pathlib.Path(__file__).parent
 
-# Reead the text of the markdown file
+# Read the text of the markdown file
 README = (DIR / "README.md").read_text()
 
+# Setup the pip package
 setup(
     name="deepdos",
     version="0.9.95",

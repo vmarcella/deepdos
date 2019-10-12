@@ -1,10 +1,11 @@
 """
     Utility module mainly for executing terminal commands
 """
+from deepdos.firewall.firewall import Firewall
 from deepdos.utils.flow import MaliciousFlow
 
 
-def log_ip_flow(from_ip, to_ip, prediction, proba):
+def log_ip_flow(from_ip: str, to_ip: str, prediction: float, proba: float) -> tuple:
     """
         Log the ip flow information
 
@@ -38,9 +39,19 @@ def log_ip_flow(from_ip, to_ip, prediction, proba):
     return ("---IP BLOCK---", src, dst, pred, prob, safe, mal, "--------")
 
 
-def examine_flow_packets(flow_info):
+def examine_flow_packets(flow_info: list) -> tuple:
     """
         Examine and log all flow activity. Will return all malicious packets
+
+        Args:
+            flow_info - A lists of objects:
+                metadata - Dataframe containing meta information
+                predictions - NP array containing the predictions for reach row in the metadata
+                probas - NP array of the probabilities that each flow is either safe or malicious
+
+        Returns:
+            A list of all malicious flow objects and another list of the
+            flow output buffer containing logs of the malicious flows
     """
     metadata, predictions, probas = flow_info
     malicious_flows = []
@@ -64,10 +75,19 @@ def examine_flow_packets(flow_info):
 
 def create_firewall(
     interface: str, interface_data: dict, firewall_type: str, naughty_count: int
-):
+) -> Firewall:
     """
         Firewall factory. Will create a firewall based on the type of firewall that is passed in.
         Currently, this function only supports linux based operating systems
+
+        Args:
+            interface - The interface as a string
+            interface_data - The interface data as a dictionary
+            firewall_type - The name of the firewall to use as a string
+            naughty_count - the maximum offenses as an integer
+
+        Returns:
+            A firewall if successfully setup, None otherwise
     """
     # Check the firewall type
     if firewall_type == "linux":

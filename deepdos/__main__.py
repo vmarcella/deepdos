@@ -61,6 +61,7 @@ class DeepDos:
             and then take action with the firewall if needed.
         """
         try:
+            # Parse the flow data
             flow_data = parse_flow_data()
         except ValueError:
             raise ValueError("too little flow")
@@ -107,7 +108,6 @@ class DeepDos:
                     print(
                         " - Not enough information inside of generated flow, restarting process"
                     )
-                continue
 
 
 def start_execution():

@@ -6,9 +6,17 @@ import getpass
 import subprocess
 
 
-def proc_capture_pcap(interface, line_count=5000):
+def proc_capture_pcap(interface: str, line_count: int = 5000) -> list:
     """
         Capturing pcap information
+
+        Args:
+            interface - The desired network interface as a string
+            line_count - The amount of lines to be read in by tcpdump
+            before aggregating all the packets into flows
+
+        Returns:
+            the read in bytes as a list
     """
     # pcap command with tcpdump (supported by both macos and )
     pcap_cmd = ["tcpdump", "-i", interface, "-s", "65535", "-w", "-"]
@@ -44,12 +52,12 @@ def proc_capture_pcap(interface, line_count=5000):
     return output_list
 
 
-def proc_execute_cicflowmeter(etc_dir: str):
+def proc_execute_cicflowmeter(etc_dir: str) -> None:
     """
         Execute the cicflowmeter to create the flow csv from the pcap file.
 
         Args:
-            etc_dir - The parent directory of all non-code files
+            etc_dir - The parent directory of all non-code files as a string
     """
     # cic flowmeter command that retrieves all .pcap files from pcap_info and creates
     # a flow output for each .pcap file
@@ -70,9 +78,12 @@ def proc_execute_cicflowmeter(etc_dir: str):
         raise subprocess.CalledProcessError(exit_status, cic_cmd)
 
 
-def proc_find_deepdos():
+def proc_find_deepdos() -> str:
     """
         Find where deepdos is located in your path
+
+        Returns:
+            The location of deepdos as a string
     """
     # Obtain the deepdos bin location post install
     get_deepdos = ["which", "deepdos"]
@@ -88,11 +99,12 @@ def proc_find_deepdos():
             "deepdos couldn't be found on your path. Please try adding deepdos to your path"
             "or executing it as sudo."
         )
-        exit(1)
+        exit()
+
     return location.decode("utf-8").rstrip()
 
 
-def proc_create_linux_symlink(src_location: str):
+def proc_create_linux_symlink(src_location: str) -> None:
     """
         Create a symlink for deepdos so that it can be found on the sudo secure path.
 
@@ -143,4 +155,4 @@ def proc_create_linux_symlink(src_location: str):
     # Couldn't authenticate successfully, display error
     if exit_status:
         print(std_err.decode("utf-8").rstrip())
-        exit(1)
+        exit()

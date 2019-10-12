@@ -9,6 +9,17 @@ from deepdos.firewall.offender import Offender
 class Firewall(ABC):
     """
         Firewall class manager for adding rules to our firewall
+
+        Args:
+            interface - The network interface to write rules for.
+            interface_data - The interface data of the interface we're listening to.
+            naughty_count - The amount of offenses that we allow a flow to have before.
+
+        Properties:
+            offenders - A dictionary containing the offending flows.
+            input_banned - A dictionary containing the banned input flows.
+            output_banned - A dictionary containing the banned output flows.
+            ip_version - The IP protocol we're writing rules for.
     """
 
     def __init__(self, interface: str, interface_data: dict, naughty_count: int):
@@ -38,9 +49,12 @@ class Firewall(ABC):
         """
         return NotImplemented
 
-    def track_flows(self, malicious_flows):
+    def track_flows(self, malicious_flows: list):
         """
             Track ips that have been marked malicious
+
+            Args:
+                malicious_flows - List of malicious flow objects to track 
         """
         print(self.offenders)
         interface_info = self.interface_data[self.ip_version]

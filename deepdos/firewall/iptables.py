@@ -5,13 +5,25 @@ import time
 
 import iptc
 from deepdos.firewall.firewall import Firewall
+from deepdos.firewall.offender import Offender
 
+# Export the iptables connection error
 IPTCError = iptc.ip4tc.IPTCError
 
 
 class IPtable(Firewall):
     """
         Linux based firewall class
+
+        Args:
+            interface - The network interface we're writing rules for.
+            interface_data - A dictionary containing data about the interface.
+            naughty_count - The maxmimum amount of offenses a flow can have before being banned.
+
+        Properties:
+            filter_table - The iptables filter table, where input input and output chains are located.
+            input_chain  - The input chain that controls all input rules.
+            output_chain - The output chain that controls all output rules.
     """
 
     def __init__(self, interface, interface_data, naughty_count):
@@ -22,10 +34,13 @@ class IPtable(Firewall):
         self.input_chain = iptc.Chain(self.filter_table, "INPUT")
         self.output_chain = iptc.Chain(self.filter_table, "OUTPUT")
 
-    def create_rule(self, offender):
+    def create_rule(self, offender: Offender):
         """
             Create a firewall rule that will disable communication between the from_ip and
             to_ip on the desired interface for the specified protocol.
+
+            Args:
+                offender - The offending flow to write a rule for.
         """
         print("- Creating rule for an offender")
         print(offender)
@@ -63,7 +78,6 @@ class IPtable(Firewall):
 
     def remove_rule(self):
         """
-        yeet
+        Remove a rule from the table. Still waiting to be written
         """
-        self.x = 0
-        return self.x
+        return 1
