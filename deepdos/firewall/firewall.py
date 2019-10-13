@@ -3,6 +3,7 @@
 """
 from abc import ABC, abstractmethod
 
+from deepdos.conf import create_logger
 from deepdos.firewall.offender import Offender
 
 
@@ -31,14 +32,16 @@ class Firewall(ABC):
         self.input_banned = {}
         self.output_banned = {}
         self.ip_version = "2"
+        self.logger = create_logger(__name__, "INFO")
 
     @abstractmethod
-    def create_rule(self, offender: Offender):
+    def create_rule(self, offender: Offender) -> None:
         """
-            Create a firewall rule given:
-                ips - tuple(from_ip, to_ip)
-                ports - tuple(from_port, to_port)
-                protocol: "TCP"
+            Create a firewall rule given the offending connection.
+
+            Args:
+                offender -> The offending flow that is being banned.
+
         """
         return NotImplemented
 
@@ -49,14 +52,13 @@ class Firewall(ABC):
         """
         return NotImplemented
 
-    def track_flows(self, malicious_flows: list):
+    def track_flows(self, malicious_flows: list) -> None:
         """
             Track ips that have been marked malicious
 
             Args:
-                malicious_flows - List of malicious flow objects to track 
+                malicious_flows - List of malicious flow objects to track inside of our firewall
         """
-        print(self.offenders)
         interface_info = self.interface_data[self.ip_version]
         local_ip = interface_info["address"]
 
@@ -78,11 +80,12 @@ class Firewall(ABC):
                     self.create_rule(offender)
                     del self.offenders[flow.connection]
                 else:
-                    print(" - Adding an offense to flow:")
-                    print(f"\t{flow}")
+                    self.logger.info(f"Adding an offense to flow: {flow.connection}")
                     offender.add_offense(port, flow.protocol)
+                    self.logger.info(f"Flow: {flow} Offenses: {offender.offenses}")
 
             else:
+                self.logger.info(f"First offense for flow: {flow.connection}")
                 # Register the flow as an offender :(
                 self.offenders[flow.connection] = Offender(
                     flow.connection, port, flow.protocol, outbound

@@ -1,8 +1,11 @@
 """
     Utility module mainly for executing terminal commands
 """
+from deepdos.conf import create_logger
 from deepdos.firewall.firewall import Firewall
 from deepdos.utils.flow import MaliciousFlow
+
+LOGGER = create_logger(__name__, "INFO")
 
 
 def log_ip_flow(from_ip: str, to_ip: str, prediction: float, proba: float) -> tuple:
@@ -21,20 +24,16 @@ def log_ip_flow(from_ip: str, to_ip: str, prediction: float, proba: float) -> tu
     """
     src = f"Src IP: {from_ip}"
     dst = f"Dst IP: {to_ip}"
-    pred = f"Prediction: {'Malicious' if prediction else 'Safe'}"
+    pred = f"{'Malicious' if prediction else 'Safe'}"
     prob = f"Probabilities:"
-    safe = f" - Safe - {proba[0] * 100:.2f}%"
-    mal = f" - Malicious - {proba[1]*100:.2f}%"
+    safe = f"{proba[0] * 100:.2f}%"
+    mal = f"{proba[1]*100:.2f}%"
 
-    # Monolithoc print statement
-    print("---IP---")
-    print(src)
-    print(dst)
-    print(pred)
-    print(prob)
-    print(safe)
-    print(mal)
-    print("--------")
+    confidence = mal if prediction else safe
+
+    LOGGER.info(
+        f"{from_ip} to {to_ip} was classified as {pred} with {confidence} confidence"
+    )
 
     return ("---IP BLOCK---", src, dst, pred, prob, safe, mal, "--------")
 
@@ -96,7 +95,6 @@ def create_firewall(
         try:
             return IPtable(interface, interface_data, naughty_count)
         except IPTCError:
-            print("Need to be root in order to access firewall")
             return None
     else:
         return None

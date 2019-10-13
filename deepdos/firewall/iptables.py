@@ -26,7 +26,7 @@ class IPtable(Firewall):
             output_chain - The output chain that controls all output rules.
     """
 
-    def __init__(self, interface, interface_data, naughty_count):
+    def __init__(self, interface: str, interface_data: dict, naughty_count: int):
         super().__init__(interface, interface_data, naughty_count)
         # Instantiate the filter table with the input and output chains readily accessible
         # for writing rules.
@@ -34,7 +34,7 @@ class IPtable(Firewall):
         self.input_chain = iptc.Chain(self.filter_table, "INPUT")
         self.output_chain = iptc.Chain(self.filter_table, "OUTPUT")
 
-    def create_rule(self, offender: Offender):
+    def create_rule(self, offender: Offender) -> None:
         """
             Create a firewall rule that will disable communication between the from_ip and
             to_ip on the desired interface for the specified protocol.
@@ -42,8 +42,9 @@ class IPtable(Firewall):
             Args:
                 offender - The offending flow to write a rule for.
         """
-        print("- Creating rule for an offender")
-        print(offender)
+        # Currently stub out the firewall rule creation
+        self.logger.info(f"Creating rule for: {offender.connection}")
+        return
 
         # Unpack some variables
         interface_info = self.interface_data[self.ip_version]

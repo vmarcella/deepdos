@@ -1,6 +1,7 @@
 """
     Global variables
 """
+import logging
 import os
 import sys
 
@@ -16,6 +17,31 @@ ETC_DIR = f"{ROOT_DIR}/.etc"
 
 # Latest stable model
 LATEST_STABLE_MODEL = "lr-stable-0.9.0.pickle"
+
+
+def create_logger(module_name: str, log_level: str) -> logging.Logger:
+    """
+        Create a logger object based on the pythons module name
+
+        Args:
+            module_name - The name of the module to create the logger for as.
+            log_level   - The log level to be logging output at.
+
+        Returns:
+            A customized logger object for deepdos logging
+    """
+    logger = logging.getLogger(module_name)
+    logger.setLevel(log_level)
+
+    channel = logging.StreamHandler()
+    channel.setLevel(log_level)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
+    channel.setFormatter(formatter)
+
+    logger.addHandler(channel)
+    return logger
 
 
 def create_etc_dirs():

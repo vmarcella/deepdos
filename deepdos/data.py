@@ -5,10 +5,12 @@ import pickle
 
 import numpy as np
 import pandas as pd
-from deepdos.conf import ETC_DIR, LATEST_STABLE_MODEL
+from deepdos.conf import ETC_DIR, LATEST_STABLE_MODEL, create_logger
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+
+LOGGER = create_logger(__name__, "INFO")
 
 
 def load_dataframe(
@@ -55,11 +57,13 @@ def load_model(
         lr_file = open(f"{ETC_DIR}/models/{model_path}", "rb")
         model = pickle.load(lr_file)
         lr_file.close()
+        LOGGER.info(f"Loaded model: {model_path}")
     else:
         lr_file = open(f"{ETC_DIR}/models/{model_path}", "wb")
         model = create_lr()
         pickle.dump(model, lr_file)
         lr_file.close()
+        LOGGER.info(f"Created and saved: {model_path}")
 
     return model
 
@@ -67,31 +71,32 @@ def load_model(
 def parse_flow_data(path: str = f"{ETC_DIR}/flow_output/out.pcap_Flow.csv"):
     """
         Parse the model data
+
+        Args:
+            path - The path to the generated flow data csv file.
+
+        Returns:
+            A dictionary containing the model input data and then the metadata about
+            the parsed data
     """
     # Load the df from memory
-    print(" - Converting csv into dataframe")
-    dataframe = load_dataframe(path)
 
-    # Split up the dataframe
-    from_ip = dataframe["Src IP"]
-    to_ip = dataframe["Dst IP"]
-    protocol = dataframe["Protocol"]
-    from_port = dataframe["Src Port"]
-    to_port = dataframe["Dst Port"]
+    LOGGER.info("Converting CSV into dataframes")
+    dataframe = load_dataframe(path)
+    metadata = pd.DataFrame()
+
+    # Setup metadata dataframe through the overall dataframe
+    metadata["from_ip"] = dataframe["Src IP"]
+    metadata["to_ip"] = dataframe["Dst IP"]
+    metadata["protocol"] = dataframe["Protocol"]
+    metadata["from_port"] = dataframe["Src Port"]
+    metadata["to_port"] = dataframe["Dst Port"]
 
     # Clean up the dataframe and create training testing data
-    print(" - Cleaning dataframe and obtaining data")
+    LOGGER.info("Cleaning the input dataframe and then getting model input data")
     preprocess_df(dataframe)
     x_train, x_test, _, _ = get_train_test(dataframe)
     data = np.concatenate((x_test, x_train))
-
-    # Create metadata dataframe for use in the main loop
-    metadata = pd.DataFrame()
-    metadata["from_ip"] = from_ip
-    metadata["to_ip"] = to_ip
-    metadata["protocol"] = protocol
-    metadata["from_port"] = from_port
-    metadata["to_port"] = to_port
 
     return {"data": data, "metadata": metadata}
 
