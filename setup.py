@@ -40,6 +40,7 @@ setup(
         "python_iptables==0.14.0",
         "scikit_learn==0.21.3",
         "wheel==0.32.3",
+        "tinydb==3.15.0",
     ],
     entry_points={"console_scripts": ["deepdos=deepdos.__main__:start_execution"]},
 )
