@@ -3,12 +3,12 @@
 """
 import time
 
-import iptc
 from deepdos.firewall.firewall import Firewall
 from deepdos.firewall.offender import Offender
+from iptc import Chain, Match, Rule, Table, Target, ip4tc
 
 # Export the iptables connection error
-IPTCError = iptc.ip4tc.IPTCError
+IPTCError = ip4tc.IPTCError
 
 
 class IPtable(Firewall):
@@ -30,9 +30,9 @@ class IPtable(Firewall):
         super().__init__(interface, interface_data, naughty_count)
         # Instantiate the filter table with the input and output chains readily accessible
         # for writing rules.
-        self.filter_table = iptc.Table(iptc.Table.FILTER)
-        self.input_chain = iptc.Chain(self.filter_table, "INPUT")
-        self.output_chain = iptc.Chain(self.filter_table, "OUTPUT")
+        self.filter_table: Table = Table(Table.FILTER)
+        self.input_chain: Chain = Chain(self.filter_table, "INPUT")
+        self.output_chain: Chain = Chain(self.filter_table, "OUTPUT")
 
     def create_rule(self, offender: Offender) -> None:
         """
@@ -47,25 +47,25 @@ class IPtable(Firewall):
         return
 
         # Unpack some variables
-        interface_info = self.interface_data[self.ip_version]
-        local_ip = interface_info["address"]
+        interface_info: dict = self.interface_data[self.ip_version]
+        local_ip: str = interface_info["address"]
 
         # Get the from ip and to ip from the offendesr src
-        from_ip, to_ip = offender.src.split("/")
+        from_ip, to_ip = offender.connection.split("/")
 
         ip = from_ip if from_ip == local_ip else to_ip
 
         # Create a rule to drop packets for this connection on the currently hooked
         # up interface
-        rule = iptc.Rule()
+        rule: Rule = Rule()
         rule.in_interface = self.interface
         rule.src = ip
-        rule.target = iptc.Target(rule, "DROP")
+        rule.target = Target(rule, "DROP")
 
         # Iterate through all of the communication channels
         # and add matches for them
         for port, protocol in list(offender.port_mappings):
-            match = iptc.Match(rule, protocol)
+            match = Match(rule, protocol)
             match.dport = port
             rule.add_match(match)
 
