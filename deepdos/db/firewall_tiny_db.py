@@ -1,10 +1,10 @@
-from tinydb import Table, TinyDB
+from deepdos.conf import ETC_DIR
+from tinydb import TinyDB, database
 
-from conf import ETC_DIR
+# Create the database/connection to it
+db = TinyDB("{ETC_DIR}/db/firewall.json")
 
-db = TinyDB("{ETC_DIR}/db/firewall")
-
-offenders: Table = db.table("Offenders")
-banned_output: Table = db.table("BannedOutput")
-banned_input: Table = db.table("BannedInput")
-offenders.insert()
+# Create all necessary tables
+offenders: database.Table = db.table("Offenders")
+banned_output: database.Table = db.table("BannedOutput")
+banned_input: database.Table = db.table("BannedInput")
