@@ -2,6 +2,7 @@
 
 ![PyPI](https://img.shields.io/pypi/v/deepdos)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/deepdos)
+![Travis (.com)](https://img.shields.io/travis/com/C3NZ/deepdos)
 ![PyPI - Implementation](https://img.shields.io/pypi/implementation/deepdos)
 ![PyPI - Wheel](https://img.shields.io/pypi/wheel/deepdos)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/deepdos)
@@ -29,6 +30,9 @@ and tool to create flow csvs from .pcap files. Their site and all resources have
 - [ ] Add ddos mitigation/firewall rule support
 
 ## How to run/setup
+
+***YOU NEED JAVA INSTALLED IN ORDER FOR DEEPDOS TO RUN THE CICFlowMeter***
+
 ### Running from scratch
 deepdos is currently only available on linux, but can simply be run by these two commands:
 ```bash
@@ -53,8 +57,6 @@ and then remove the folder from your computer :)
 This will immediately start creating necessary folders, capturing packets, and then identifying
 the traffic that is being exchanged in and out of your current computer.
 
-This also assumes that you have java installed for the program to execute the CICFlowMeter jar
-file.
 
 ### Installing with pip
 #### Linux

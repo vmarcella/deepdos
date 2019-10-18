@@ -3,7 +3,7 @@ OS="$(uname -s)"
 # Setup the application from source with a virtual environment
 if [ "$OS" = "Linux" ]; then
     # Install dependencies
-    sudo apt install libpcap-dev
+    sudo apt install libpcap-dev python3-dev python3-setuptools
 else
     # Macos setup coming soon
     brew install libpcap
