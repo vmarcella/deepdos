@@ -29,7 +29,9 @@ class Offender:
         else:
             self.connection = doc["connection"]
             self.offenses = doc["offenses"]
-            self.port_mappings = set(doc["port_mappings"])
+            port_mappings = doc["port_mappings"]
+            print(port_mappings)
+            self.port_mappings = doc["port_mappings"]
             self.outbound = doc["outbound"]
 
     def add_offense(self, port, protocol):

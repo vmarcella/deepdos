@@ -3,6 +3,7 @@
 """
 from abc import ABC, abstractmethod
 
+from colorama import Fore
 from deepdos.conf import create_logger
 from deepdos.db.firewall_tiny_db import TinyFirewall
 from deepdos.firewall.offender import Offender
@@ -28,7 +29,6 @@ class Firewall(ABC):
         # Setup general data
         self.interface = interface
         self.interface_data = interface_data
-        self.offenders = set()
         self.naughty_count = naughty_count
         self.database = TinyFirewall()
         self.ip_version = "2"
@@ -78,15 +78,22 @@ class Firewall(ABC):
                 # They've had way too many violations, it's time to ban this malicious data.
                 if offender.offenses > self.naughty_count:
                     self.create_rule(offender)
-                    self.database.remove_offenders(offender.connection)
+                    self.database.remove_offender(offender.connection)
                 else:
-                    self.logger.info(f"Adding an offense to flow: {flow.connection}")
+
+                    self.logger.info(
+                        f"Adding an offense to flow: {Fore.MAGENTA}{flow.connection}{Fore.WHITE}"
+                    )
                     offender.add_offense(port, flow.protocol)
                     self.database.update_offender(offender)
-                    self.logger.info(f"Flow: {flow} Offenses: {offender.offenses}")
+                    self.logger.info(
+                        f"Flow: {Fore.MAGENTA}{flow}{Fore.WHITE} Offenses: {Fore.RED}{offender.offenses}{Fore.WHITE}"
+                    )
 
             else:
-                self.logger.info(f"First offense for flow: {flow.connection}")
+                self.logger.info(
+                    f"First offense for flow: {Fore.MAGENTA}{flow.connection}{Fore.WHITE}"
+                )
                 # Register the flow as an offender :(
                 self.database.insert_offender(
                     Offender(flow.connection, port, flow.protocol, outbound)
