@@ -22,6 +22,7 @@ class DeepDos:
         self.model = load_model(options["model_type"])
         self.interface = options["interface"]
         self.interface_data = options["interface_data"]
+        self.ip_v4 = self.interface_data["2"]["address"]
         self.active_firewall = options["firewall"]
         self.logger = create_logger(__name__, options["log"])
 
@@ -82,7 +83,7 @@ class DeepDos:
 
         # Flag Ip flow
         result_data = flow_metadata, result, proba
-        malicious_flows, flow_logs = examine_flow_packets(result_data)
+        malicious_flows, flow_logs = examine_flow_packets(result_data, self.ip_v4)
 
         # If there is an active firewall, track all malicious flows
         if self.firewall:
