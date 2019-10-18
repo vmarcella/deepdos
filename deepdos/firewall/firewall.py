@@ -4,6 +4,7 @@
 from abc import ABC, abstractmethod
 
 from deepdos.conf import create_logger
+from deepdos.db.firewall_tiny_db import TinyFirewall
 from deepdos.firewall.offender import Offender
 
 
@@ -27,10 +28,9 @@ class Firewall(ABC):
         # Setup general data
         self.interface = interface
         self.interface_data = interface_data
+        self.offenders = set()
         self.naughty_count = naughty_count
-        self.offenders = {}
-        self.input_banned = {}
-        self.output_banned = {}
+        self.database = TinyFirewall()
         self.ip_version = "2"
         self.logger = create_logger(__name__, "INFO")
 
@@ -72,21 +72,22 @@ class Firewall(ABC):
             port = flow.from_port if outbound else flow.to_port
 
             # Check if the connection occurred
-            if flow.connection in self.offenders:
-                offender = self.offenders[flow.connection]
+            offender: Offender = self.database.get_offender(flow.connection)
 
+            if offender:
                 # They've had way too many violations, it's time to ban this malicious data.
                 if offender.offenses > self.naughty_count:
                     self.create_rule(offender)
-                    del self.offenders[flow.connection]
+                    self.database.remove_offenders(offender.connection)
                 else:
                     self.logger.info(f"Adding an offense to flow: {flow.connection}")
                     offender.add_offense(port, flow.protocol)
+                    self.database.update_offender(offender)
                     self.logger.info(f"Flow: {flow} Offenses: {offender.offenses}")
 
             else:
                 self.logger.info(f"First offense for flow: {flow.connection}")
                 # Register the flow as an offender :(
-                self.offenders[flow.connection] = Offender(
-                    flow.connection, port, flow.protocol, outbound
+                self.database.insert_offender(
+                    Offender(flow.connection, port, flow.protocol, outbound)
                 )

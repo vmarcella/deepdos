@@ -65,17 +65,15 @@ class IPtable(Firewall):
         # Iterate through all of the communication channels
         # and add matches for them
         for port, protocol in list(offender.port_mappings):
-            match = Match(rule, protocol)
+            match: Match = Match(rule, protocol)
             match.dport = port
             rule.add_match(match)
 
         # Choose which chain to create the rule for
         if offender.outgoing:
             self.output_chain.insert_rule(rule)
-            self.output_banned[rule.src] = time.time() // 60
         else:
             self.input_chain.insert_rule(rule)
-            self.input_banned[rule.src] = time.time() // 60
 
     def remove_rule(self):
         """
