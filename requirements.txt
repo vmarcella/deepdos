@@ -5,3 +5,4 @@ python_iptables==0.14.0
 scikit_learn==0.21.3
 twine
 tinydb==3.15.0
+pytest==5.0.1
