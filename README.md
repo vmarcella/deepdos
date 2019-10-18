@@ -1,5 +1,13 @@
 # deepdos
 
+![PyPI](https://img.shields.io/pypi/v/deepdos)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/deepdos)
+![PyPI - Implementation](https://img.shields.io/pypi/implementation/deepdos)
+![PyPI - Wheel](https://img.shields.io/pypi/wheel/deepdos)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/deepdos)
+![PyPI - Status](https://img.shields.io/pypi/status/deepdos)
+![PyPI - License](https://img.shields.io/pypi/l/deepdos)
+
 ## Description
 Welcome to deepdos, the python program written to monitor and potentially secure your network
 from ddos attacks! While not currently utilizing deep learning to classify packets, deepdos currently
