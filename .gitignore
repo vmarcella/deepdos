@@ -17,6 +17,9 @@ logs
 # logs for CICflowmeter
 bin/CICFlowMeter-4.0/bin/logs
 
+# Ignore the db
+deepdos/.etc/db
+
 # Ignore logs
 predictions.txt
 # Created by https://www.gitignore.io/api/linux,macos,python,tensorflow
