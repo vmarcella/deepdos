@@ -1,6 +1,7 @@
 from deepdos.conf import ETC_DIR
 from deepdos.db import FirewallDatabase
-from tinydb import TinyDB, database
+from deepdos.firewall.offender import Offender
+from tinydb import Query, TinyDB, database
 
 Table = database.Table
 
@@ -20,7 +21,7 @@ class TinyFirewall(FirewallDatabase):
 
     def __init__(self):
         # Create the database/connection to it
-        self.database: database = TinyDB("{ETC_DIR}/db/firewall.json")
+        self.database: database = TinyDB(f"{ETC_DIR}/db/firewall.json")
 
         # Obtain tables from db
         offender_table, input_table, output_table = self.register_tables()
@@ -44,11 +45,89 @@ class TinyFirewall(FirewallDatabase):
 
         return offender_table, input_table, output_table
 
-    def insert_offender(self, offender_data: dict):
+    def insert_offender(self, offender: Offender):
         """
             Insert an offender into the offenders table
         """
-        pass
+        # Create a query using a query for the offender
+        OffenderQ: Query = Query()
+        connection_match = OffenderQ.connection == offender.connection
 
-    def remove_offenders(self, banned_offender: dict = None):
-        pass
+        # Create the document dictionary
+        doc: dict = {
+            "connection": offender.connection,
+            "port_mappings": list(offender.port_mappings),
+            "offenses": offender.offenses,
+            "outbound": offender.outbound,
+        }
+
+        self.offenders_table.insert(doc)
+
+    def update_offender(self, offender: Offender):
+        """
+            Update an offender in the database
+        """
+
+        # Create the document dictionary
+        doc: dict = {
+            "connection": offender.connection,
+            "port_mappings": list(offender.port_mappings()),
+            "offenses": offender.offenses,
+            "outbound": offender.outbound,
+        }
+
+        self.offenders_table.update(doc)
+
+    def remove_offender(self, offender_connection: str):
+        """
+            Remove offenders from the database instance using 
+        """
+        OffenderQ = Query()
+        connection_match = OffenderQ.connection == offender_connection
+        self.offenders_table.remove(connection_match)
+
+    def get_offender(self, offender_connection: str) -> Offender:
+        """
+            Get an offender given the connection ID
+        """
+        OffenderQ = Query()
+        connection_match = OffenderQ.connection == offender_connection
+        offender = self.offenders_table.get(connection_match)
+
+        # If an offender is found, return the dict of the offender
+        if offender:
+            return Offender.from_dict(offender)
+
+        return None
+
+    def insert_banned_output(self, output_data):
+        """
+            Insert all banned output flows into the the database after banning them
+            with the firewall.
+        """
+        raise NotImplementedError()
+
+    def remove_banned_output(self) -> list:
+        """
+            Remove all banned output flows from the database.
+
+            Returns:
+                A list of the output flows to be removed from the firewall
+        """
+        raise NotImplementedError()
+
+    def insert_banned_inputs(self, input_data):
+        """
+           Insert all banned input flows into the database after banning them
+           with the firewall.
+        """
+        raise NotImplementedError()
+
+    def remove_banned_inputs(self) -> list:
+        """
+            Remove all banned input flows from the database that have expired.
+
+            Returns:
+                A list of the input flows to be removed from the firewall
+        """
+        raise NotImplementedError()

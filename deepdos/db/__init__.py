@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from deepdos.firewall.offender import Offender
+
 
 class FirewallDatabase(ABC):
     """
@@ -17,21 +19,28 @@ class FirewallDatabase(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_tables(self):
-        """
-            Get references to the all of the registered tables
-        """
-        raise NotImplementedError()
-
-    @abstractmethod
-    def insert_offender(self, offender_data):
+    def insert_offender(self, offender: Offender):
         """
             Insert the offender into the database for tracking
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def remove_offenders(self, banned_offender=None):
+    def get_offender(self, offender_connection: str):
+        """
+            Get an offender given the connection ID
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def update_offender(self, offender: Offender):
+        """
+            Update an offender in the database
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def remove_offender(self, offender_connection: str):
         """
             Remove all offenders that are past the expiration time or have been banned
         """
