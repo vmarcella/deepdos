@@ -71,7 +71,7 @@ class TinyFirewall(FirewallDatabase):
         # Create the document dictionary
         doc: dict = {
             "connection": offender.connection,
-            "port_mappings": list(offender.port_mappings()),
+            "port_mappings": list(offender.port_mappings),
             "offenses": offender.offenses,
             "outbound": offender.outbound,
         }
@@ -96,6 +96,10 @@ class TinyFirewall(FirewallDatabase):
 
         # If an offender is found, return the dict of the offender
         if offender:
+            # Remap port_mappings to set.
+            offender["port_mappings"] = set(
+                [(port, proto) for port, proto in offender["port_mappings"]]
+            )
             return Offender.from_dict(offender)
 
         return None

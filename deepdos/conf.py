@@ -5,8 +5,12 @@ import logging
 import os
 import sys
 
+from colorama import init
 from deepdos.utils.processes import (proc_create_linux_symlink,
                                      proc_find_deepdos)
+
+# Init colorama for colors!
+init()
 
 # Get the root directory for deepdos
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))

@@ -1,6 +1,7 @@
 """
     Utility module mainly for executing terminal commands
 """
+from colorama import Fore, Style
 from deepdos.conf import create_logger
 from deepdos.firewall.firewall import Firewall
 from deepdos.utils.flow import MaliciousFlow
@@ -8,7 +9,9 @@ from deepdos.utils.flow import MaliciousFlow
 LOGGER = create_logger(__name__, "INFO")
 
 
-def log_ip_flow(from_ip: str, to_ip: str, prediction: float, proba: float) -> tuple:
+def log_ip_flow(
+    from_ip: str, to_ip: str, prediction: float, proba: float, local_ip: str
+) -> tuple:
     """
         Log the ip flow information
 
@@ -18,13 +21,27 @@ def log_ip_flow(from_ip: str, to_ip: str, prediction: float, proba: float) -> tu
                 to_ip list - pandas series
                 prediction - np array of prediction
                 proba      - np array of pred probabilities
+                local_ip   - The local ip of the interface
 
         Returns:
             Return the output buffer for writing to files
     """
-    src = f"Src IP: {from_ip}"
-    dst = f"Dst IP: {to_ip}"
-    pred = f"{'Malicious' if prediction else 'Safe'}"
+
+    from_ip = (
+        f"{Fore.CYAN}{from_ip}{Fore.WHITE}"
+        if from_ip == local_ip
+        else f"{Fore.MAGENTA}{from_ip}{Fore.WHITE}"
+    )
+    to_ip = (
+        f"{Fore.CYAN}{to_ip}{Fore.WHITE}"
+        if to_ip == local_ip
+        else f"{Fore.MAGENTA}{to_ip}{Fore.WHITE}"
+    )
+    pred = (
+        f"{Fore.RED}Malicious{Fore.WHITE}"
+        if prediction
+        else f"{Fore.GREEN}Safe{Fore.WHITE}"
+    )
     prob = f"Probabilities:"
     safe = f"{proba[0] * 100:.2f}%"
     mal = f"{proba[1]*100:.2f}%"
@@ -32,13 +49,13 @@ def log_ip_flow(from_ip: str, to_ip: str, prediction: float, proba: float) -> tu
     confidence = mal if prediction else safe
 
     LOGGER.info(
-        f"{from_ip} to {to_ip} was classified as {pred} with {confidence} confidence"
+        f"{from_ip} to {to_ip} was classified as {pred} with {Fore.YELLOW}{confidence}{Fore.WHITE} confidence"
     )
 
-    return ("---IP BLOCK---", src, dst, pred, prob, safe, mal, "--------")
+    return ("---IP BLOCK---", from_ip, to_ip, pred, prob, safe, mal, "--------")
 
 
-def examine_flow_packets(flow_info: list) -> tuple:
+def examine_flow_packets(flow_info: list, local_ip: str) -> tuple:
     """
         Examine and log all flow activity. Will return all malicious packets
 
@@ -47,6 +64,7 @@ def examine_flow_packets(flow_info: list) -> tuple:
                 metadata - Dataframe containing meta information
                 predictions - NP array containing the predictions for reach row in the metadata
                 probas - NP array of the probabilities that each flow is either safe or malicious
+            local_ip - The local ip of the interface as a string
 
         Returns:
             A list of all malicious flow objects and another list of the
@@ -59,7 +77,7 @@ def examine_flow_packets(flow_info: list) -> tuple:
     # Iterate through all of the flow information
     for row, prediction, proba in zip(metadata.values, predictions, probas):
         from_ip, to_ip, proto, from_port, to_port = row
-        buffer = log_ip_flow(from_ip, to_ip, prediction, proba)
+        buffer = log_ip_flow(from_ip, to_ip, prediction, proba, local_ip)
         flow_buffer.append(buffer)
 
         # If this is classified as malicious, let's report this incident.
