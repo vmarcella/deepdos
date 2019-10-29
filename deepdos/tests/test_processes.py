@@ -2,7 +2,6 @@ import subprocess
 import unittest
 
 import deepdos.utils.processes as proc
-
 import mock
 
 
@@ -57,3 +56,9 @@ class ProcessTests(unittest.TestCase):
         self.assertRaises(
             subprocess.CalledProcessError, proc.proc_capture_pcap, "enp3s0", 1
         )
+
+    @mock.patch("deepdos.utils.processes.subprocess.Popen")
+    def test_successfull_find_deepdos(self, mock_proc):
+        """
+            Test a successful run for finding deepdos
+        """
