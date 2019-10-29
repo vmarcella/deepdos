@@ -54,7 +54,7 @@ def create_etc_dirs():
         runs if the logs directory isn't created.
     """
     # Load in the folders that don't exist
-    folders = ["logs", "pcap_info", "flow_output", "db"]
+    folders = ["logs", "pcap_info", "flow_output", "db", "analytics"]
 
     for folder in folders:
         if not os.path.exists(f"{ETC_DIR}/{folder}"):
