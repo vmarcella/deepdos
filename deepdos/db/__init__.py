@@ -81,3 +81,53 @@ class FirewallDatabase(ABC):
                 A list of the input flows to be removed from the firewall
         """
         raise NotImplementedError()
+
+
+class AnalyticsDatabase(ABC):
+    """
+        The analytics database layout. All analytic dbs must follow this model
+        for plug and play capability.
+
+    Properties:
+            database         - The tinydb database instance.
+            offenders_table  - The offenders table.
+            exceptions_table - The exception table
+    """
+
+    def __init__(self):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def register_tables(self):
+        """
+            Register the tables inside of the TinyDB database
+
+            Returns:
+                A tuple of all the created/found tables in your database
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def insert_offender(self, offender: Offender):
+        """
+            Insert an offender into the offenders table
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def update_offender(self, offender: Offender):
+        """
+            Update an offender in the database
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def insert_exception(self, exception: Exception):
+        """
+            Insert the exception into the database.
+
+            Args:
+                exception - The exception being passed in
+        """
+
+        raise NotImplementedError()
