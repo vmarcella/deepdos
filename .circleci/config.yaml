@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           command: |
-            sudo pip install -r requirements.txt
+            pip install -r --user requirements.txt
       - run:
           command: |
             pytest
