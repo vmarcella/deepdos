@@ -1,8 +1,8 @@
 import subprocess
 import unittest
+import unittest.mock as mock
 
 import deepdos.utils.processes as proc
-import mock
 
 
 def proc_close_success():
