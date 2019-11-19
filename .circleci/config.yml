@@ -11,8 +11,5 @@ jobs:
             pip install --user -r requirements.txt
       - run:
           command: |
-            export PATH="~/.local/bin:$PATH"
-      - run:
-          command: |
-            pytest
+            python -m pytest
     
