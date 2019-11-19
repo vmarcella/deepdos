@@ -8,7 +8,10 @@ jobs:
       - checkout
       - run:
           command: |
-            pip install -r requirements.txt
+            pip install --user -r requirements.txt
+      - run:
+          command: |
+            export PATH="~/.local/bin:$PATH"
       - run:
           command: |
             pytest
