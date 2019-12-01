@@ -103,6 +103,15 @@ usage: src [-h] [-i INTERFACE] [-n NAUGHTY_COUNT] [--find-interface]
            [--firewall FIREWALL] [--model-type MODEL_TYPE]
 ```
 
+## Documentation
+* [deepdos](./deepdos/docs.md)
+* [deepdos.db](./deepdos/db/docs.md)
+* [deepdos.args](./deepdos/args/docs.md)
+* [deepdos.tests](./deepdos/tests/docs.md)
+* [deepdos.analytics](./deepdos/analytics/docs.md)
+* [deepdos.firewall](./deepdos/firewall/docs.md)
+* [deepdos.utils](./deepdos/utils/docs.md)
+
 ## How to deploy
 You can deploy this on your own machine, but production use will come in the future.
 
