@@ -6,6 +6,7 @@ import os
 import sys
 
 from colorama import init
+
 from deepdos.utils.processes import (proc_create_linux_symlink,
                                      proc_find_deepdos)
 
@@ -77,7 +78,7 @@ def setup_root_access():
 
         else:
             # User is signed into non-linux
-            print("You need to be root in order to run these commands!")
+            print("Sorry, deepdos is only for linux right now :/")
             exit(1)
 
 

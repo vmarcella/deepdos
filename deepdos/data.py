@@ -5,16 +5,17 @@ import pickle
 
 import numpy as np
 import pandas as pd
-from deepdos.conf import ETC_DIR, LATEST_STABLE_MODEL, create_logger
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+
+from deepdos.conf import ETC_DIR, LATEST_STABLE_MODEL, ROOT_DIR, create_logger
 
 LOGGER = create_logger(__name__, "INFO")
 
 
 def load_dataframe(
-    csv_location: str = "{ROOT_DIR}/ddos_balanced/final_dataset.csv"
+    csv_location: str = f"{ROOT_DIR}/ddos_balanced/final_dataset.csv"
 ) -> pd.DataFrame:
     """
         Load up our dataframes that contain 100k of each ddos and benign packets
@@ -25,7 +26,7 @@ def load_dataframe(
 
     # If we're not reading our large db file, that means we're reading
     # in a generated flow file.
-    if csv_location != "{ROOT_DIR}/ddos_balanced/final_dataset.csv":
+    if csv_location != f"{ROOT_DIR}/ddos_balanced/final_dataset.csv":
         input_df = pd.read_csv(csv_location)
         return input_df
 

@@ -6,6 +6,7 @@ import os
 from deepdos.args import parse_args
 from deepdos.conf import ETC_DIR, create_logger, load_conf
 from deepdos.data import load_model, parse_flow_data
+from deepdos.deep import main
 from deepdos.utils.network import create_firewall, examine_flow_packets
 from deepdos.utils.processes import (proc_capture_pcap,
                                      proc_execute_cicflowmeter)
@@ -118,6 +119,7 @@ def start_execution():
     """
         Parse arguments and run our deepdos application
     """
+    main()
     # Parse all options for deepdos
     options = parse_args()
     # Instantiate logging
