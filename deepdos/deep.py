@@ -1,11 +1,10 @@
 import os
 
+import deepdos.data as data
 import numpy as np
 import pandas as pd
 import tensorflow as tf
 from keras.utils.np_utils import to_categorical
-
-import deepdos.data as data
 
 
 class DeepdosNN:
