@@ -1,5 +1,6 @@
 import os
 
+import deepdos.conf as conf
 import deepdos.data as data
 import numpy as np
 import pandas as pd
@@ -57,7 +58,7 @@ class DeepdosNN:
         # the dimenisons equal to the amount of mappings between each layer.
         n_hidden_1 = 256
         n_hidden_2 = 256
-        n_input = 77
+        n_input = 78
         n_classes = 2
 
         weights = {
@@ -103,9 +104,9 @@ class DeepdosNN:
 
         return loss
 
-    def load_dataframe(self, csv_location: str, batch_size: int) -> pd.DataFrame:
+    def load_dataframes(self, batch_size: int) -> pd.DataFrame:
         """
-            Load up our dataframes that contain 100k of each ddos and benign packets
+            Load up our dataframes that have now split the data.
 
             Returns:
                 A dataframe that contains 100k samples of both
@@ -120,31 +121,28 @@ class DeepdosNN:
         # TODO This reads through the dataset at two separate points, but has
         # to open the same file descriptor twice in order to read at
         # different sections. Is it possible to avoid this?
-        for chunk in range(5):
-            ddos_chunk = pd.read_csv(
-                csv_location, index_col=0, nrows=batch_size, skiprows=0 + counter
-            )
+
+        ddos_dataset = pd.read_csv(
+            f"{conf.ROOT_DIR}/../ddos_balanced/xaa.csv", chunksize=batch_size // 2
+        )
+
+        benign_dataset = pd.read_csv(
+            f"{conf.ROOT_DIR}/../ddos_balanced/xab.csv", chunksize=batch_size // 2
+        )
+
+        for ddos_chunk, benign_chunk in zip(ddos_dataset, benign_dataset):
 
             if features is None:
                 features = ddos_chunk.columns
+                benign_chunk.columns = features
             else:
                 ddos_chunk.columns = features
+                benign_chunk.columns = features
 
             data.preprocess_df(ddos_chunk)
-            processed_ddos_chunk = ddos_chunk
-
-            benign_chunk = pd.read_csv(
-                csv_location, index_col=0, nrows=batch_size, skiprows=6500000 + counter
-            )
-
-            benign_chunk.columns = features
             data.preprocess_df(benign_chunk)
-            processed_benign_chunk = benign_chunk
-            counter += batch_size
 
-            yield pd.concat([processed_ddos_chunk, processed_benign_chunk])
-
-        return
+            yield pd.concat([ddos_chunk, benign_chunk])
 
     def train_model(self):
         """
@@ -159,9 +157,7 @@ class DeepdosNN:
 
             counter = 1
             # Iterate over each batch and compute the average loss
-            for chunk in self.load_dataframe(
-                "/home/cenz/dev/ds/deepdos/ddos_balanced/final_dataset.csv", batch_size
-            ):
+            for chunk in self.load_dataframes(batch_size):
 
                 x_train, x_test, y_train, y_test = data.get_train_test(chunk)
 
@@ -169,7 +165,7 @@ class DeepdosNN:
                 x_batch, y_batch = (x_train, to_categorical(y_train, num_classes=2))
 
                 cost = self.propagate(x_batch, y_batch)
-                avg_cost += cost / 5
+                avg_cost += cost / batch_size
                 print(f"Chunk {counter} / {12794627 // batch_size}")
                 counter += 1
 

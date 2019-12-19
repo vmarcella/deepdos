@@ -121,6 +121,7 @@ def start_execution():
     """
     main()
     # Parse all options for deepdos
+
     options = parse_args()
     # Instantiate logging
 
