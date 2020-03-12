@@ -34,7 +34,7 @@ setup(
     include_package_data=True,
     setup_requires=["wheel"],
     install_requires=[
-        "psutil==5.6.3",
+        "psutil==5.6.6",
         "pandas==0.25.1",
         "numpy==1.17.2",
         "python_iptables==0.14.0",
