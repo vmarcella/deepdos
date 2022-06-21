@@ -36,7 +36,7 @@ setup(
     install_requires=[
         "psutil==5.6.6",
         "pandas==0.25.1",
-        "numpy==1.17.2",
+        "numpy==1.22.0",
         "python_iptables==0.14.0",
         "scikit_learn==0.21.3",
         "wheel==0.32.3",
