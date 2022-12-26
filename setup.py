@@ -39,7 +39,7 @@ setup(
         "numpy==1.17.2",
         "python_iptables==0.14.0",
         "scikit_learn==0.21.3",
-        "wheel==0.32.3",
+        "wheel==0.38.1",
         "tinydb==3.15.0",
         "colorama==0.4.1",
     ],
